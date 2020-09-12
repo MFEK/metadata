@@ -1,0 +1,14 @@
+[package]
+name = "Qmetadata"
+version = "0.0.0"
+authors = ["Fredrick Brennan <copypaste@kittens.ph>"]
+description = "Basic metadata fetcher for the MFEQ project. It interrogates UFO fonts, for now mostly fontinfo.plist"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = "2.33.3"
+justify = "0.1.3"
+norad = { version = "0.2.0", path = "src/norad" }
+serde-value = "0.7.0"
+enum_for_matches = "0.1.1"
