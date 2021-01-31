@@ -1,5 +1,5 @@
 [package]
-name = "Qmetadata"
+name = "MFEKmetadata"
 version = "0.0.0"
 authors = ["Fredrick Brennan <copypaste@kittens.ph>"]
 description = "Basic metadata fetcher for the MFEQ project. It interrogates UFO fonts, for now mostly fontinfo.plist"
@@ -9,6 +9,6 @@ description = "Basic metadata fetcher for the MFEQ project. It interrogates UFO 
 [dependencies]
 clap = "2.33.3"
 justify = "0.1.3"
-norad = { version = "0.2.0", path = "src/norad" }
+norad = { git = "https://github.com/MFEK/norad" }
 serde-value = "0.7.0"
 enum_for_matches = "0.1.1"

@@ -1,7 +1,7 @@
-//! Qmetadata - Basic metadata fetcher for the MFEQ project.
+//! MFEKmetadata - Basic metadata fetcher for the MFEK project.
 //! Main author is Fredrick Brennan (@ctrlcctrlv); see AUTHORS.
 //! (c) 2020. Apache 2.0 licensed.
-#![allow(non_snake_case)] // for our name Qmetadata
+#![allow(non_snake_case)] // for our name MFEKmetadata
 
 extern crate clap;
 extern crate justify;
