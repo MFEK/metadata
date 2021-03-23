@@ -103,8 +103,10 @@ fn main() {
     let matches = parse_args();
     let (program, args) = matches.subcommand();
 
+    let ufopath = matches.value_of("UFO").unwrap();
+
     let ufo = Ufo::with_fields(DataRequest::none())
-        .load_ufo(matches.value_of("UFO").unwrap())
+        .load_ufo(ufopath)
         .unwrap();
 
     match program {

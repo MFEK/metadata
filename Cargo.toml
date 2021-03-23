@@ -9,6 +9,6 @@ description = "Basic metadata fetcher for the MFEQ project. It interrogates UFO 
 [dependencies]
 clap = "2.33.3"
 justify = "0.1.3"
-norad = { git = "https://github.com/MFEK/norad" }
+norad = { git = "https://github.com/linebender/norad" }
 serde-value = "0.7.0"
 enum_for_matches = "0.1.1"
