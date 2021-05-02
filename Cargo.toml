@@ -2,7 +2,7 @@
 name = "MFEKmetadata"
 version = "0.0.0"
 authors = ["Fredrick Brennan <copypaste@kittens.ph>"]
-description = "Basic metadata fetcher for the MFEQ project. It interrogates UFO fonts, for now mostly fontinfo.plist"
+description = "Basic metadata fetcher for the MFEK project. It interrogates UFO fonts, for now mostly fontinfo.plist"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
