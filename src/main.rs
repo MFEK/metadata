@@ -3,13 +3,15 @@
 //! (c) 2020. Apache 2.0 licensed.
 #![allow(non_snake_case)] // for our name MFEKmetadata
 
-extern crate clap;
-extern crate justify;
-extern crate norad;
-extern crate serde_value;
-extern crate enum_for_matches;
+use clap;
+use norad::{Font, DataRequest};
 
-use norad::{Ufo, DataRequest};
+mod glyphs;
+use glyphs::glyphs;
+mod glyphslen;
+use glyphslen::glyphslen;
+mod arbitrary;
+use arbitrary::arbitrary;
 
 fn parse_args() -> clap::ArgMatches<'static> {
     clap::App::new(clap::crate_name!())
@@ -23,6 +25,8 @@ fn parse_args() -> clap::ArgMatches<'static> {
                 .required(true)
                 .index(1),
         )
+        .subcommand(clap::SubCommand::with_name("glyphslen").about("Show number of glyphs in font"))
+        .subcommand(clap::SubCommand::with_name("glyphs").about("Dumps the font's glyphs"))
         .subcommand(clap::SubCommand::with_name("metrics").about("Dumps the font's metrics"))
         .subcommand(
             clap::SubCommand::with_name("arbitrary")
@@ -53,64 +57,26 @@ fn parse_args() -> clap::ArgMatches<'static> {
         .get_matches()
 }
 
-use serde_value::Value as SerdeValue;
-fn arbitrary(ufo: &Ufo, keys: Vec<&str>) {
-    let md = &ufo.meta;
-    assert_eq!(
-        md.format_version,
-        norad::FormatVersion::V3,
-        "UFO versions other than 3 unsupported"
-    );
-    let fi = ufo
-        .font_info
-        .as_ref()
-        .expect("Norad failed to parse font metainfo");
-    let map = serde_value::to_value(fi).expect("Failed to serialize fontinfo - not a serde Value?");
-
-    for key in keys {
-        match map {
-            SerdeValue::Map(ref m) => {
-                let arg = &SerdeValue::String(key.to_string());
-                match m.get(arg) {
-                    Some(SerdeValue::Option(ref o)) => enum_for_matches::run!(
-                        **(o.as_ref().unwrap()),
-                        { 
-                              SerdeValue::U8(ref oo)
-                            | SerdeValue::U16(ref oo)
-                            | SerdeValue::U32(ref oo)
-                            | SerdeValue::U64(ref oo)
-                            | SerdeValue::I8(ref oo)
-                            | SerdeValue::I16(ref oo)
-                            | SerdeValue::I32(ref oo)
-                            | SerdeValue::I64(ref oo)
-                            | SerdeValue::F32(ref oo)
-                            | SerdeValue::F64(ref oo)
-                            | SerdeValue::Char(ref oo)
-                            | SerdeValue::String(ref oo)
-                        }, 
-                        {println!("{}", &oo);}, 
-                        {panic!("Unimplemented request for array, option or dict");}
-                    ),
-                    _ => println!(""),
-                }
-            }
-            _ => panic!("FontInfo not a BTreeMap"),
-        }
-    }
-}
-
 fn main() {
     let matches = parse_args();
     let (program, args) = matches.subcommand();
 
     let ufopath = matches.value_of("UFO").unwrap();
 
-    let ufo = Ufo::with_fields(DataRequest::none())
+    let dr = match program {
+        "arbitrary" => DataRequest::none(),
+        "glyphs" | "glyphslen" => *DataRequest::none().layers(true),
+        _ => unimplemented!()
+    };
+
+    let ufo = Font::with_fields(dr)
         .load_ufo(ufopath)
         .unwrap();
 
     match program {
         "arbitrary" => arbitrary(&ufo, args.unwrap().values_of("keys").unwrap().collect()),
+        "glyphs" => glyphs(&ufo),
+        "glyphslen" => glyphslen(&ufo),
         _ => {}
     }
 }
