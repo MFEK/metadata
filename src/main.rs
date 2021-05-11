@@ -4,14 +4,16 @@
 #![allow(non_snake_case)] // for our name MFEKmetadata
 
 use clap;
-use norad::{Font, DataRequest};
+use norad::{DataRequest, Font, Glyph};
 
 mod glyphs;
-use glyphs::glyphs;
+use glyphs::{glyph, glyphs};
 mod glyphslen;
 use glyphslen::glyphslen;
 mod arbitrary;
 use arbitrary::arbitrary;
+
+use std::sync::Arc;
 
 fn parse_args() -> clap::ArgMatches<'static> {
     clap::App::new(clap::crate_name!())
@@ -20,13 +22,14 @@ fn parse_args() -> clap::ArgMatches<'static> {
         .about(clap::crate_description!())
         .setting(clap::AppSettings::SubcommandRequiredElseHelp)
         .arg(
-            clap::Arg::with_name("UFO")
-                .help("Sets the input UFO font to use")
+            clap::Arg::with_name("UFO_OR_GLIF")
+                .help("Sets the input file (glif/UFO) to use")
                 .required(true)
                 .index(1),
         )
         .subcommand(clap::SubCommand::with_name("glyphslen").about("Show number of glyphs in font"))
         .subcommand(clap::SubCommand::with_name("glyphs").about("Dumps the font's glyphs"))
+        .subcommand(clap::SubCommand::with_name("glyph").about("Dumps a single font glyph in the format of `MFEKmetadata glyphs`"))
         .subcommand(clap::SubCommand::with_name("metrics").about("Dumps the font's metrics"))
         .subcommand(
             clap::SubCommand::with_name("arbitrary")
@@ -61,22 +64,30 @@ fn main() {
     let matches = parse_args();
     let (program, args) = matches.subcommand();
 
-    let ufopath = matches.value_of("UFO").unwrap();
+    let path = matches.value_of("UFO_OR_GLIF").unwrap();
 
     let dr = match program {
         "arbitrary" => DataRequest::none(),
         "glyphs" | "glyphslen" => *DataRequest::none().layers(true),
+        "glyph" => DataRequest::none(),
         _ => unimplemented!()
     };
 
-    let ufo = Font::with_fields(dr)
-        .load_ufo(ufopath)
-        .unwrap();
+    let ufo = match program {
+        "glyph" => None,
+        _ => Some(Font::with_fields(dr).load_ufo(path).unwrap()),
+    };
+
+    let glypho = match program {
+        "glyph" => Some(Glyph::load(path).unwrap()),
+        _ => None
+    };
 
     match program {
-        "arbitrary" => arbitrary(&ufo, args.unwrap().values_of("keys").unwrap().collect()),
-        "glyphs" => glyphs(&ufo),
-        "glyphslen" => glyphslen(&ufo),
+        "arbitrary" => arbitrary(&ufo.unwrap(), args.unwrap().values_of("keys").unwrap().collect()),
+        "glyphs" => glyphs(&ufo.unwrap()),
+        "glyphslen" => glyphslen(&ufo.unwrap()),
+        "glyph" => glyph(Arc::new(glypho.unwrap())),
         _ => {}
     }
 }

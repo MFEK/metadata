@@ -1,4 +1,4 @@
-use norad::Font;
+use norad::{Font, Glyph};
 use unic_ucd::name::Name;
 use unic_ucd::category::GeneralCategory;
 
@@ -21,13 +21,22 @@ fn name_to_string(name: &Name) -> String {
     }
 }
 
+use std::sync::Arc;
+fn print_glyph(g: Arc<Glyph>) {
+    eprint!("{}\t{}\t", &g.name, codepoints_to_string(&g.codepoints));
+    if g.codepoints.len() > 0 {
+        eprint!("{}\t", name_to_string(&Name::of(g.codepoints[0]).unwrap()));
+        eprint!("{:?}\t", GeneralCategory::of(g.codepoints[0]));
+    }
+    eprintln!("")
+}
+
 pub fn glyphs(ufo: &Font) {
     for g in ufo.default_layer().iter_contents() {
-        eprint!("{}\t{}\t", &g.name, codepoints_to_string(&g.codepoints));
-        if g.codepoints.len() > 0 {
-            eprint!("{}\t", name_to_string(&Name::of(g.codepoints[0]).unwrap()));
-            eprint!("{:?}\t", GeneralCategory::of(g.codepoints[0]));
-        }
-        eprintln!("")
+        print_glyph(g);
     }
+}
+
+pub fn glyph(g: Arc<Glyph>) {
+    print_glyph(g);
 }
