@@ -23,12 +23,12 @@ fn name_to_string(name: &Name) -> String {
 
 use std::sync::Arc;
 fn print_glyph(g: Arc<Glyph>) {
-    eprint!("{}\t{}\t", &g.name, codepoints_to_string(&g.codepoints));
+    print!("{}\t{}\t", &g.name, codepoints_to_string(&g.codepoints));
     if g.codepoints.len() > 0 {
-        eprint!("{}\t", Name::of(g.codepoints[0]).map(|n|name_to_string(&n)).unwrap_or("<unencoded>".into()));
-        eprint!("{:?}\t", GeneralCategory::of(g.codepoints[0]));
+        print!("{}\t", Name::of(g.codepoints[0]).map(|n|name_to_string(&n)).unwrap_or("<unencoded>".into()));
+        print!("{:?}\t", GeneralCategory::of(g.codepoints[0]));
     }
-    eprintln!("")
+    println!("")
 }
 
 pub fn glyphs(ufo: &Font) {
