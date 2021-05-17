@@ -31,7 +31,7 @@ fn print_glyph(g: Arc<Glyph>) {
                 .iter()
                 .map(|cp| Name::of(*cp)
                     .map(|n| name_to_string(&n))
-                    .unwrap_or("<unencoded>".into()))
+                    .unwrap_or(if *cp <= '\x1f' { "<unnamed>".into() } else { "<unencoded>".into() }))
                 .collect::<Vec<String>>())
             .join(",")
         );
