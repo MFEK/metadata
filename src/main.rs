@@ -29,7 +29,10 @@ fn parse_args() -> clap::ArgMatches<'static> {
         )
         .subcommand(clap::SubCommand::with_name("glyphslen").about("Show number of glyphs in font"))
         .subcommand(clap::SubCommand::with_name("glyphs").about("Dumps the font's glyphs"))
-        .subcommand(clap::SubCommand::with_name("glyph").about("Dumps a single font glyph in the format of `MFEKmetadata glyphs`"))
+        .subcommand(
+            clap::SubCommand::with_name("glyph")
+                .about("Dumps a single font glyph in the format of `MFEKmetadata glyphs`"),
+        )
         .subcommand(clap::SubCommand::with_name("metrics").about("Dumps the font's metrics"))
         .subcommand(
             clap::SubCommand::with_name("arbitrary")
@@ -60,6 +63,7 @@ fn parse_args() -> clap::ArgMatches<'static> {
         .get_matches()
 }
 
+#[rustfmt::skip]
 fn main() {
     let matches = parse_args();
     let (program, args) = matches.subcommand();
@@ -70,7 +74,7 @@ fn main() {
         "arbitrary" => DataRequest::none(),
         "glyphs" | "glyphslen" => *DataRequest::none().layers(true),
         "glyph" => DataRequest::none(),
-        _ => unimplemented!()
+        _ => unimplemented!(),
     };
 
     let ufo = match program {
@@ -80,7 +84,7 @@ fn main() {
 
     let glypho = match program {
         "glyph" => Some(Glyph::load(path).unwrap()),
-        _ => None
+        _ => None,
     };
 
     match program {

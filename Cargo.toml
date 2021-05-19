@@ -9,7 +9,7 @@ edition = "2018"
 
 [dependencies]
 clap = "2.33.3"
-norad = { git = "https://github.com/linebender/norad" }
+norad = "0.4"
 serde-value = "0.7.0"
 enum_for_matches = "0.1.1"
 unic-ucd = "0.9"

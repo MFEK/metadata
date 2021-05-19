@@ -21,6 +21,16 @@ fn name_to_string(name: &Name) -> String {
     }
 }
 
+fn unnamed_name(cp: char) -> &'static str {
+    if cp <= '\x1f' {
+        "<control>"
+    } else if (cp >= '\u{E000}' && cp <= '\u{F8FF}') || (cp >= '\u{F0000}' && cp <= '\u{FFFFD}') || (cp >= '\u{100000}' && cp <= '\u{10FFFD}') {
+        "<PUA>"
+    } else {
+        "<unencoded>"
+    }
+}
+
 use std::sync::Arc;
 fn print_glyph(g: Arc<Glyph>) {
     print!("{}\t{}\t", &g.name, codepoints_to_string(&g.codepoints));
@@ -31,7 +41,7 @@ fn print_glyph(g: Arc<Glyph>) {
                 .iter()
                 .map(|cp| Name::of(*cp)
                     .map(|n| name_to_string(&n))
-                    .unwrap_or(if *cp <= '\x1f' { "<unnamed>".into() } else { "<unencoded>".into() }))
+                    .unwrap_or(unnamed_name(*cp).to_string()))
                 .collect::<Vec<String>>())
             .join(",")
         );
@@ -48,8 +58,8 @@ fn print_glyph(g: Arc<Glyph>) {
 }
 
 pub fn glyphs(ufo: &Font) {
-    for g in ufo.default_layer().iter_contents() {
-        print_glyph(g);
+    for g in ufo.default_layer().iter() {
+        print_glyph(g.to_owned());
     }
 }
 

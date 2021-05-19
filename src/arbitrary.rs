@@ -1,6 +1,6 @@
+use enum_for_matches;
 use norad::Font;
 use serde_value::Value as SerdeValue;
-use enum_for_matches;
 
 pub fn arbitrary(ufo: &Font, keys: Vec<&str>) {
     let md = &ufo.meta;
@@ -22,7 +22,7 @@ pub fn arbitrary(ufo: &Font, keys: Vec<&str>) {
                 match m.get(arg) {
                     Some(SerdeValue::Option(ref o)) => enum_for_matches::run!(
                         **(o.as_ref().unwrap()),
-                        { 
+                        {
                               SerdeValue::U8(ref oo)
                             | SerdeValue::U16(ref oo)
                             | SerdeValue::U32(ref oo)
@@ -35,8 +35,8 @@ pub fn arbitrary(ufo: &Font, keys: Vec<&str>) {
                             | SerdeValue::F64(ref oo)
                             | SerdeValue::Char(ref oo)
                             | SerdeValue::String(ref oo)
-                        }, 
-                        {println!("{}", &oo);}, 
+                        },
+                        {println!("{}", &oo);},
                         {panic!("Unimplemented request for array, option or dict");}
                     ),
                     _ => println!(""),
