@@ -22,12 +22,12 @@ fn name_to_string(name: &Name) -> String {
 }
 
 fn unnamed_name(cp: char) -> &'static str {
-    if cp <= '\x1f' {
-        "<control>"
-    } else if (cp >= '\u{E000}' && cp <= '\u{F8FF}') || (cp >= '\u{F0000}' && cp <= '\u{FFFFD}') || (cp >= '\u{100000}' && cp <= '\u{10FFFD}') {
-        "<PUA>"
-    } else {
-        "<unencoded>"
+    match cp {
+        '\x00'..='\x1f' => "<control>",
+        '\u{E000}'..='\u{F8FF}' => "<PUA>",
+        '\u{F0000}'..='\u{FFFFD}' => "<PUA-A>",
+        '\u{100000}'..='\u{10FFFD}' => "<PUA-B>",
+        _ => "<unencoded>",
     }
 }
 
