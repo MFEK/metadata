@@ -1,6 +1,9 @@
+use csv::{self, Writer as CsvWriter};
 use enum_for_matches;
 use norad::Font;
 use serde_value::Value as SerdeValue;
+
+use std::io;
 
 pub fn arbitrary(ufo: &Font, keys: Vec<&str>) {
     let md = &ufo.meta;
@@ -36,7 +39,10 @@ pub fn arbitrary(ufo: &Font, keys: Vec<&str>) {
                             | SerdeValue::Char(ref oo)
                             | SerdeValue::String(ref oo)
                         },
-                        {println!("{}", &oo);},
+                        {
+                            let mut wtr = CsvWriter::from_writer(io::stdout());
+                            wtr.serialize(oo).unwrap_or(());
+                        },
                         {panic!("Unimplemented request for array, option or dict");}
                     ),
                     _ => println!(""),

@@ -13,6 +13,7 @@ norad = "0.4"
 serde-value = "0.7.0"
 enum_for_matches = "0.1.1"
 unic-ucd = "0.9"
+csv = "1.1"
 
 [profile.release]
 opt-level = 'z'
