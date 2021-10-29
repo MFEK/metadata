@@ -11,9 +11,13 @@ edition = "2018"
 clap = "2.33.3"
 norad = "0.4"
 serde-value = "0.7.0"
+serde_json = "1"
 enum_for_matches = "0.1.1"
 unic-ucd = "0.9"
 csv = "1.1"
+glifparser = { git = "https://github.com/MFEK/glifparser.rlib", branch = "master", default-features = false }
+MFEKmath = { git = "https://github.com/MFEK/math.rlib", branch = "main", default-features = false }
+kurbo = "0.8"
 
 [profile.release]
 opt-level = 'z'

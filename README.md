@@ -67,6 +67,24 @@ FLAGS:
     -V, --version    Prints version information
 ```
 
+```
+MFEKmetadata-glyphpathlen
+Show length of contours in a glyph (.glif) on separate lines
+
+USAGE:
+    MFEKmetadata glyphpathlen [FLAGS] [OPTIONS]
+
+FLAGS:
+    -s, --segmentwise    Display length of each segment separated by spaces
+    -j, --joined         Display one line: sum of joined path
+    -J, --json           Output JSON instead
+    -h, --help           Prints help information
+    -V, --version        Prints version information
+
+OPTIONS:
+        --accuracy <accuracy>    Precision of length calculation [default: 0.01]
+```
+
 ## Building
 
 This MFEK module uses `git` submodules. So, after you clone, you have to run:
