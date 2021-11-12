@@ -1,8 +1,44 @@
-use clap::ArgMatches;
+use clap::{self, ArgMatches};
 use glifparser::{Glif, PointData};
 use kurbo::ParamCurveArclen;
 use serde_json as sj;
 use MFEKmath::{Piecewise, piecewise::SegmentIterator};
+
+use crate::util;
+
+pub fn clap_subcommand() -> clap::App<'static, 'static> {
+    clap::SubCommand::with_name("glyphpathlen")
+        .setting(clap::AppSettings::DeriveDisplayOrder)
+        .about("Show length of contours in a glyph (.glif) on separate lines")
+        .arg(
+            clap::Arg::with_name("segmentwise")
+                .short("s")
+                .long("segmentwise")
+                .help("Display length of each segment separated by spaces"),
+        )
+        .arg(
+            clap::Arg::with_name("joined")
+                .long("joined")
+                .short("j")
+                .help("Display one line: sum of joined path"),
+        )
+        .arg(
+            clap::Arg::with_name("json")
+                .long("json")
+                .short("J")
+                .help("Output JSON instead"),
+        )
+        .arg(
+            clap::Arg::with_name("accuracy")
+                .long("accuracy")
+                .help("Precision of length calculation")
+                .takes_value(true)
+                .default_value("0.01")
+                .empty_values(false)
+                .number_of_values(1)
+                .validator(util::arg_validator_positive_f64)
+        )
+}
 
 pub fn glyphpathlen(glif: Glif<()>, args: &ArgMatches) {
     let mut seglens = vec![];

@@ -1,6 +1,14 @@
+use clap;
 use norad::{Font, Glyph};
 use unic_ucd::category::GeneralCategory;
 use unic_ucd::name::Name;
+
+pub fn clap_subcommands() -> [clap::App<'static, 'static>; 2] {
+    [
+        clap::SubCommand::with_name("glyphs").about("Dumps the font's glyphs"),
+        clap::SubCommand::with_name("glyph").about("Dumps a single font glyph in the format of `MFEKmetadata glyphs`")
+    ]
+}
 
 fn codepoints_to_string(cps: &Vec<char>) -> String {
     let mut ret = String::with_capacity((cps.len() * 4) + cps.len());

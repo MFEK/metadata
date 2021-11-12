@@ -1,9 +1,37 @@
+use clap;
 use csv::{self, Writer as CsvWriter};
 use enum_for_matches;
 use norad::Font;
 use serde_value::Value as SerdeValue;
 
 use std::io;
+
+pub fn clap_subcommand() -> clap::App<'static, 'static> {
+    clap::SubCommand::with_name("arbitrary")
+        .about("Dumps key values")
+        .arg(
+            clap::Arg::with_name("keys")
+                .required(true)
+                .multiple(true)
+                .takes_value(true)
+                .short("k")
+                .help("List of key values to display, one per line, in order requested"),
+        )
+        .arg(
+            clap::Arg::with_name("file")
+                .default_value("fontinfo.plist")
+                .multiple(false)
+                .short("f")
+                .help("File to search through for XPath's"),
+        )
+        .arg(
+            clap::Arg::with_name("with-keys")
+                .long("with-keys")
+                .takes_value(false)
+                .required(false)
+                .help("Whether to show keys in a tab-separated format"),
+        )
+}
 
 pub fn arbitrary(ufo: &Font, keys: Vec<&str>) {
     let md = &ufo.meta;

@@ -1,6 +1,5 @@
 //! MFEKmetadata - Basic metadata fetcher for the MFEK project.
-//! Main author is Fredrick Brennan (@ctrlcctrlv); see AUTHORS.
-//! (c) 2020. Apache 2.0 licensed.
+//! (c) 2020–2021 Fredrick R. Brennan & MFEK Authors. Apache 2.0 licensed.
 #![allow(non_snake_case)] // for our name MFEKmetadata
 
 use clap;
@@ -21,7 +20,7 @@ mod util;
 use std::sync::Arc;
 
 fn parse_args() -> clap::ArgMatches<'static> {
-    clap::App::new(clap::crate_name!())
+    let mut app = clap::App::new(clap::crate_name!())
         .version("0.0")
         .author(clap::crate_authors!())
         .about(clap::crate_description!())
@@ -32,70 +31,15 @@ fn parse_args() -> clap::ArgMatches<'static> {
                 .required(true)
                 .index(1),
         )
-        .subcommand(clap::SubCommand::with_name("glyphslen").about("Show number of glyphs in font"))
-        .subcommand(
-            clap::SubCommand::with_name("glyphpathlen")
-                .setting(clap::AppSettings::DeriveDisplayOrder)
-                .about("Show length of contours in a glyph (.glif) on separate lines")
-                .arg(
-                    clap::Arg::with_name("segmentwise")
-                        .short("s")
-                        .long("segmentwise")
-                        .help("Display length of each segment separated by spaces"),
-                )
-                .arg(
-                    clap::Arg::with_name("joined")
-                        .long("joined")
-                        .short("j")
-                        .help("Display one line: sum of joined path"),
-                )
-                .arg(
-                    clap::Arg::with_name("json")
-                        .long("json")
-                        .short("J")
-                        .help("Output JSON instead"),
-                )
-                .arg(
-                    clap::Arg::with_name("accuracy")
-                        .long("accuracy")
-                        .help("Precision of length calculation")
-                        .takes_value(true)
-                        .default_value("0.01")
-                        .empty_values(false)
-                        .number_of_values(1)
-                        .validator(util::arg_validator_positive_f64)
-                )
-        )
-        .subcommand(clap::SubCommand::with_name("glyphs").about("Dumps the font's glyphs"))
-        .subcommand(clap::SubCommand::with_name("glyph").about("Dumps a single font glyph in the format of `MFEKmetadata glyphs`"))
-        .subcommand(clap::SubCommand::with_name("metrics").about("Dumps the font's metrics"))
-        .subcommand(
-            clap::SubCommand::with_name("arbitrary")
-                .about("Dumps key values")
-                .arg(
-                    clap::Arg::with_name("keys")
-                        .required(true)
-                        .multiple(true)
-                        .takes_value(true)
-                        .short("k")
-                        .help("List of key values to display, one per line, in order requested"),
-                )
-                .arg(
-                    clap::Arg::with_name("file")
-                        .default_value("fontinfo.plist")
-                        .multiple(false)
-                        .short("f")
-                        .help("File to search through for XPath's"),
-                )
-                .arg(
-                    clap::Arg::with_name("with-keys")
-                        .long("with-keys")
-                        .takes_value(false)
-                        .required(false)
-                        .help("Whether to show keys in a tab-separated format"),
-                ),
-        )
-        .get_matches()
+        .subcommand(glyphslen::clap_subcommand())
+        .subcommand(glyphpathlen::clap_subcommand())
+        .subcommand(arbitrary::clap_subcommand());
+
+    for sc in glyphs::clap_subcommands() { // `glyph`, `glyphs`
+        app = app.subcommand(sc);
+    }
+
+    app.get_matches()
 }
 
 #[rustfmt::skip]
