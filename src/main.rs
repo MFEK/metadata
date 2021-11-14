@@ -59,7 +59,7 @@ fn main() {
 
     let ufo = match program {
         "glyph" | "glyphpathlen" => None,
-        _ => Some(Font::with_fields(dr).load_ufo(path).unwrap()),
+        _ => Some(Font::load_requested_data(path, dr).unwrap()),
     };
 
     let glypho = match program {

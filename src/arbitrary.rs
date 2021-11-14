@@ -40,11 +40,8 @@ pub fn arbitrary(ufo: &Font, keys: Vec<&str>) {
         norad::FormatVersion::V3,
         "UFO versions other than 3 unsupported"
     );
-    let fi = ufo
-        .font_info
-        .as_ref()
-        .expect("Norad failed to parse font metainfo");
-    let map = serde_value::to_value(fi).expect("Failed to serialize fontinfo - not a serde Value?");
+    let map = serde_value::to_value(&ufo.font_info)
+        .expect("Failed to serialize fontinfo - not a serde Value?");
 
     for key in keys {
         match map {
