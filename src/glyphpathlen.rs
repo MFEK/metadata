@@ -1,5 +1,5 @@
 use clap::{self, ArgMatches};
-use glifparser::{Glif, PointData};
+use glifparser::Glif;
 use kurbo::ParamCurveArclen;
 use serde_json as sj;
 use MFEKmath::{piecewise::SegmentIterator, Piecewise};

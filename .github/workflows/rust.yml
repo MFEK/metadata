@@ -70,4 +70,4 @@ jobs:
           components: rustfmt
       - name: Run rustfmt
         run: |
-          cargo fmt --check
+          cargo fmt -- --check
