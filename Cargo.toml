@@ -9,7 +9,7 @@ edition = "2018"
 
 [dependencies]
 clap = "2.33.3"
-norad = "0.4"
+norad = "0.6"
 serde-value = "0.7.0"
 serde_json = "1"
 enum_for_matches = "0.1.1"
