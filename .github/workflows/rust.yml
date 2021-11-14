@@ -1,0 +1,73 @@
+name: Rust
+
+on:
+  pull_request: {}
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [linux, macos, windows]
+        include:
+          - platform: linux
+            os: ubuntu-20.04
+          - platform: macos
+            os: macos-10.15
+          - platform: windows
+            os: windows-2019
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Fetch tags
+        run: git fetch --tags
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: clippy
+      - name: Cache cargo builds
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target/debug
+          key: cargo-${{ matrix.platform }}-${{ hashFiles('**/Cargo.lock') }}
+      - name: Run cargo build
+        run: |
+          cargo build --locked
+      - name: Run cargo test
+        run: |
+          cargo test --locked
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: MFEKmetadata-${{ matrix.platform }}
+          path: |
+            target/debug/MFEKmetadata
+            target/debug/MFEKmetadata.exe
+
+  rustfmt:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt
+      - name: Run rustfmt
+        run: |
+          cargo fmt --check
