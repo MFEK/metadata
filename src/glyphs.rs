@@ -6,7 +6,8 @@ use unic_ucd::name::Name;
 pub fn clap_subcommands() -> [clap::App<'static, 'static>; 2] {
     [
         clap::SubCommand::with_name("glyphs").about("Dumps the font's glyphs"),
-        clap::SubCommand::with_name("glyph").about("Dumps a single font glyph in the format of `MFEKmetadata glyphs`")
+        clap::SubCommand::with_name("glyph")
+            .about("Dumps a single font glyph in the format of `MFEKmetadata glyphs`"),
     ]
 }
 

@@ -3,8 +3,8 @@
 #![allow(non_snake_case)] // for our name MFEKmetadata
 
 use clap;
-use norad::{DataRequest, Font, Glyph};
 use glifparser::Glif;
+use norad::{DataRequest, Font, Glyph};
 
 mod glyphs;
 use glyphs::{glyph, glyphs};
@@ -35,7 +35,8 @@ fn parse_args() -> clap::ArgMatches<'static> {
         .subcommand(glyphpathlen::clap_subcommand())
         .subcommand(arbitrary::clap_subcommand());
 
-    for sc in glyphs::clap_subcommands() { // `glyph`, `glyphs`
+    for sc in glyphs::clap_subcommands() {
+        // `glyph`, `glyphs`
         app = app.subcommand(sc);
     }
 
