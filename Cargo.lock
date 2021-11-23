@@ -5,11 +5,13 @@ version = 3
 [[package]]
 name = "MFEKmath"
 version = "0.1.0"
-source = "git+https://github.com/MFEK/math.rlib?branch=main#0cde4ce07c446ec912e9f52f88b0ac5dbf512ddf"
+source = "git+https://github.com/MFEK/math.rlib?branch=main#b33e2d3407e371964810581a6a5c7ca9add44b1e"
 dependencies = [
  "flo_curves",
  "glifparser",
- "plist 1.3.1",
+ "kurbo",
+ "log",
+ "plist",
  "xmltree",
 ]
 
@@ -143,7 +145,8 @@ checksum = "ef935720718beb52849b8413b6e2f3426de3e803ffc4d058504ac1b7b9e9c260"
 [[package]]
 name = "flo_curves"
 version = "0.6.0"
-source = "git+https://github.com/Logicalshift/flo_curves?branch=v0.6#2c4a3cf5c5d780f325d30876d2b33a77607be6d9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a7f49674e0905d093d0d4c6e88d868b8b066f4be51c9beedd0e3734268be8349"
 dependencies = [
  "itertools",
  "roots",
@@ -164,12 +167,12 @@ dependencies = [
 [[package]]
 name = "glifparser"
 version = "1.1.0"
-source = "git+https://github.com/MFEK/glifparser.rlib?branch=master#7d0765f1952ec703901896444d8c8b3c14f030a9"
+source = "git+https://github.com/MFEK/glifparser.rlib?branch=master#648c7dd5da789b359debb51f68eb8be9f4f6d82a"
 dependencies = [
  "integer_or_float",
  "kurbo",
  "log",
- "plist 1.3.1",
+ "plist",
  "trees",
  "xmltree",
 ]
@@ -276,7 +279,7 @@ version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ce992b9240bd5d664ac85340de11a3800402f7552673898e176262a59447e016"
 dependencies = [
- "plist 1.3.0",
+ "plist",
  "quick-xml",
  "serde",
  "serde_derive",
@@ -312,18 +315,6 @@ dependencies = [
  "indexmap",
  "line-wrap",
  "serde",
- "time",
- "xml-rs",
-]
-
-[[package]]
-name = "plist"
-version = "1.3.1"
-source = "git+https://github.com/ebarnard/rust-plist#822694603c2f80bce4fc4f16e0fcd91a379b7096"
-dependencies = [
- "base64",
- "indexmap",
- "line-wrap",
  "time",
  "xml-rs",
 ]
