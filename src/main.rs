@@ -38,8 +38,12 @@ fn parse_args() -> clap::ArgMatches<'static> {
                 .index(1)
                 .validator(|p| {
                     let p = path::Path::new(&p);
-                    if p.is_file() || p.is_dir() { Ok(()) } else { Err(format!("File {} does not exist", p.display())) }
-                })
+                    if p.is_file() || p.is_dir() {
+                        Ok(())
+                    } else {
+                        Err(format!("File {} does not exist", p.display()))
+                    }
+                }),
         )
         .subcommand(glyphslen::clap_subcommand())
         .subcommand(glyphpathlen::clap_subcommand())
