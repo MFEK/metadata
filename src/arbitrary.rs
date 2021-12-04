@@ -17,6 +17,7 @@ pub fn clap_subcommand() -> clap::App<'static, 'static> {
                 .required(true)
                 .multiple(true)
                 .takes_value(true)
+                .allow_hyphen_values(true)
                 .short("k")
                 .long("key")
                 .help("List of key values to display, one per line, in order requested"),
@@ -25,6 +26,7 @@ pub fn clap_subcommand() -> clap::App<'static, 'static> {
             clap::Arg::with_name("values")
                 .multiple(true)
                 .takes_value(true)
+                .allow_hyphen_values(true)
                 .short("v")
                 .long("value")
                 .help("List of values to write, in order requested"),
