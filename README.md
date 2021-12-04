@@ -3,44 +3,46 @@
 Basic metadata fetcher for the MFEK project. It interrogates UFO fonts, for now mostly fontinfo.plist&mdash;also determines a list of glyphs.
 
 ```
-MFEKmetadata 0.0
+MFEKmetadata 0.0.1-beta1
 Fredrick Brennan <copypaste@kittens.ph>
 Basic metadata fetcher for the MFEK project. It interrogates UFO fonts, for now mostly fontinfo.plist
 
 USAGE:
-    MFEKmetadata <UFO_OR_GLIF> <SUBCOMMAND>
+    MFEKmetadata <PATH> <SUBCOMMAND>
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
 
 ARGS:
-    <UFO_OR_GLIF>    Sets the input file (glif/UFO) to use
+    <PATH>    Sets the input file (glif/UFO/rarely plist) to use
 
 SUBCOMMANDS:
-    arbitrary    Dumps key values
-    glyph        Dumps a single font glyph in the format of `MFEKmetadata glyphs`
-    glyphs       Dumps the font's glyphs
-    glyphslen    Show number of glyphs in font
-    help         Prints this message or the help of the given subcommand(s)
-    metrics      Dumps the font's metrics
+    arbitrary         Dumps key values
+    glyph             Dumps a single font glyph in the format of `MFEKmetadata glyphs`
+    glyphpathlen      Show length of contours in a glyph (.glif) on separate lines
+    glyphs            Dumps the font's glyphs
+    glyphslen         Show number of glyphs in font
+    help              Prints this message or the help of the given subcommand(s)
+    write_metainfo    
 ```
 
 ```
-MFEKmetadata-arbitrary 
+MFEKmetadata-arbitrary 0.0.1-beta1
 Dumps key values
 
 USAGE:
-    MFEKmetadata <UFO_OR_GLIF> arbitrary [FLAGS] [OPTIONS] -k <keys>...
+    MFEKmetadata <PATH> arbitrary [OPTIONS] --key <keys>...
 
 FLAGS:
-    -h, --help         Prints help information
-    -V, --version      Prints version information
-        --with-keys    Whether to show keys in a tab-separated format
+    -h, --help       Prints help information
+    -V, --version    Prints version information
 
 OPTIONS:
-    -f <file>           File to search through for XPath's [default: fontinfo.plist]
-    -k <keys>...        List of key values to display, one per line, in order requested
+    -k, --key <keys>...                  List of key values to display, one per line, in order requested
+    -v, --value <values>...              List of values to write, in order requested
+    -X, --xml-redirect <xml-redirect>    Redirect XML to this path instead. Use /dev/stdout or /dev/stderr if that's
+                                         what you want, `-` not recognized.
 ```
 
 ```

@@ -5,6 +5,7 @@
 use clap;
 use env_logger;
 use glifparser::Glif;
+use mfek_ipc;
 use norad::{DataRequest, Font, Glyph};
 
 mod glyphs;
@@ -50,6 +51,7 @@ fn parse_args() -> clap::ArgMatches<'static> {
         app = app.subcommand(sc);
     }
 
+    mfek_ipc::display_header("metadata");
     app.get_matches()
 }
 
