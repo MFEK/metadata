@@ -52,12 +52,12 @@ pub fn glyphpathlen(glif: Glif<()>, args: &ArgMatches) {
     for contour in pw.segs.iter() {
         let si = SegmentIterator::new(contour.clone());
         let mut path = kurbo::BezPath::new();
-        path.move_to((contour.segs[0].w1).to_f64_tuple());
+        path.move_to(Into::<(f64, f64)>::into(contour.segs[0].w1));
         for seg in si {
             path.curve_to(
-                (seg.0.w2).to_f64_tuple(),
-                (seg.0.w3).to_f64_tuple(),
-                (seg.0.w4).to_f64_tuple(),
+                Into::<(f64, f64)>::into(seg.0.w2),
+                Into::<(f64, f64)>::into(seg.0.w3),
+                Into::<(f64, f64)>::into(seg.0.w4),
             );
         }
         if contour.is_closed() {
