@@ -3,6 +3,7 @@
 #![allow(non_snake_case)] // for our name MFEKmetadata
 
 use clap;
+use env_logger;
 use glifparser::Glif;
 use norad::{DataRequest, Font, Glyph};
 
@@ -14,14 +15,18 @@ mod glyphpathlen;
 use glyphpathlen::glyphpathlen;
 mod arbitrary;
 use arbitrary::arbitrary;
+mod write_metainfo;
+use write_metainfo::write_metainfo;
 
-mod util;
+#[macro_use]
+pub mod util;
 
+use std::path;
 use std::sync::Arc;
 
 fn parse_args() -> clap::ArgMatches<'static> {
     let mut app = clap::App::new(clap::crate_name!())
-        .version("0.0")
+        .version(env!("CARGO_PKG_VERSION"))
         .author(clap::crate_authors!())
         .about(clap::crate_description!())
         .setting(clap::AppSettings::SubcommandRequiredElseHelp)
@@ -33,7 +38,8 @@ fn parse_args() -> clap::ArgMatches<'static> {
         )
         .subcommand(glyphslen::clap_subcommand())
         .subcommand(glyphpathlen::clap_subcommand())
-        .subcommand(arbitrary::clap_subcommand());
+        .subcommand(arbitrary::clap_subcommand())
+        .subcommand(write_metainfo::clap_subcommand());
 
     for sc in glyphs::clap_subcommands() {
         // `glyph`, `glyphs`
@@ -45,20 +51,20 @@ fn parse_args() -> clap::ArgMatches<'static> {
 
 #[rustfmt::skip]
 fn main() {
+    env_logger::init();
     let matches = parse_args();
     let (program, args) = matches.subcommand();
 
-    let path = matches.value_of("UFO_OR_GLIF").unwrap();
+    let path = matches.value_of_os("PATH").unwrap();
 
     let dr = match program {
-        "arbitrary" => DataRequest::none(),
+        "arbitrary" | "glyph" | "glyphpathlen" | "write_metainfo" => DataRequest::none(),
         "glyphs" | "glyphslen" => *DataRequest::none().layers(true),
-        "glyph" | "glyphpathlen" => DataRequest::none(),
         _ => unimplemented!(),
     };
 
     let ufo = match program {
-        "glyph" | "glyphpathlen" => None,
+        "arbitrary" | "glyph" | "glyphpathlen" | "write_metainfo" => None,
         _ => Some(Font::load_requested_data(path, dr).unwrap()),
     };
 
@@ -73,11 +79,12 @@ fn main() {
     };
 
     match program {
-        "arbitrary" => arbitrary(&ufo.unwrap(), args.unwrap().values_of("keys").unwrap().collect()),
+        "arbitrary" => arbitrary(path, args.unwrap()),
         "glyphs" => glyphs(&ufo.unwrap()),
         "glyphslen" => glyphslen(&ufo.unwrap()),
         "glyph" => glyph(Arc::new(glypho.unwrap())),
         "glyphpathlen" => glyphpathlen(glif.unwrap(), args.unwrap()),
+        "write_metainfo" => write_metainfo(path).unwrap(),
         _ => {}
     }
 }

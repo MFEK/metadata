@@ -1,5 +1,7 @@
 #![allow(unused)]
 
+use log;
+
 #[derive(Debug)]
 enum ValidatorRange {
     All,
@@ -73,5 +75,13 @@ pub fn arg_validator_suffix(
             assert_eq!(v.pop().unwrap(), suffix);
         }
         f(v)
+    }
+}
+
+#[macro_export]
+macro_rules! exit {
+    ($($args:tt)*) => {
+        log::error!($($args)*);
+        std::process::exit(1);
     }
 }
