@@ -31,10 +31,14 @@ fn parse_args() -> clap::ArgMatches<'static> {
         .about(clap::crate_description!())
         .setting(clap::AppSettings::SubcommandRequiredElseHelp)
         .arg(
-            clap::Arg::with_name("UFO_OR_GLIF")
-                .help("Sets the input file (glif/UFO) to use")
+            clap::Arg::with_name("PATH")
+                .help("Sets the input file (glif/UFO/rarely plist) to use")
                 .required(true)
-                .index(1),
+                .index(1)
+                .validator(|p| {
+                    let p = path::Path::new(&p);
+                    if p.is_file() || p.is_dir() { Ok(()) } else { Err(format!("File {} does not exist", p.display())) }
+                })
         )
         .subcommand(glyphslen::clap_subcommand())
         .subcommand(glyphpathlen::clap_subcommand())

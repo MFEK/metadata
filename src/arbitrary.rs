@@ -1,79 +1,86 @@
 use clap;
-use csv::{self, Writer as CsvWriter};
-use enum_for_matches;
-use norad::Font;
-use serde_value::Value as SerdeValue;
+use plist;
+use itertools::Itertools;
 
-use std::io;
+use std::ffi;
+use std::fs;
+use std::path as fspath;
+
+use crate::write_metainfo::write_metainfo;
 
 pub fn clap_subcommand() -> clap::App<'static, 'static> {
     clap::SubCommand::with_name("arbitrary")
         .about("Dumps key values")
+        .version(env!("CARGO_PKG_VERSION"))
         .arg(
             clap::Arg::with_name("keys")
                 .required(true)
                 .multiple(true)
                 .takes_value(true)
                 .short("k")
+                .long("key")
                 .help("List of key values to display, one per line, in order requested"),
         )
         .arg(
-            clap::Arg::with_name("file")
-                .default_value("fontinfo.plist")
-                .multiple(false)
-                .short("f")
-                .help("File to search through for XPath's"),
+            clap::Arg::with_name("values")
+                .multiple(true)
+                .takes_value(true)
+                .short("v")
+                .long("value")
+                .help("List of values to write, in order requested"),
         )
         .arg(
-            clap::Arg::with_name("with-keys")
-                .long("with-keys")
-                .takes_value(false)
-                .required(false)
-                .help("Whether to show keys in a tab-separated format"),
+            clap::Arg::with_name("xml-redirect")
+                .takes_value(true)
+                .short("X")
+                .long("xml-redirect")
+                .help("Redirect XML to this path instead. Use /dev/stdout or /dev/stderr if that's what you want, `-` not recognized.")
         )
 }
 
-pub fn arbitrary(ufo: &Font, keys: Vec<&str>) {
-    let md = &ufo.meta;
-    assert_eq!(
-        md.format_version,
-        norad::FormatVersion::V3,
-        "UFO versions other than 3 unsupported"
-    );
-    let map = serde_value::to_value(&ufo.font_info)
-        .expect("Failed to serialize fontinfo - not a serde Value?");
+pub fn arbitrary(path: &ffi::OsStr, args: &clap::ArgMatches) {
+    drop(write_metainfo(path));
+    let mut path = fspath::PathBuf::from(path);
+    let keys: Vec<String> = args.values_of("keys").unwrap().map(|s|s.to_owned()).collect();
+    let values: Vec<String> = args.values_of("values").map(|v|v.map(|s|s.to_owned()).collect()).unwrap_or(vec![]);
+    let xml_redirect: Option<_> = args.value_of("xml-redirect");
+    let values_len = values.len();
+    let is_plist = path.extension() != Some(&ffi::OsString::from("plist"));
+    if is_plist {
+        path.push("fontinfo.plist");
+    }
+    let mut plistv = plist::Value::from_file(&path).expect("fontinfo not plist");
+    let map: &mut plist::Dictionary = plistv.as_dictionary_mut().unwrap();
 
-    for key in keys {
-        match map {
-            SerdeValue::Map(ref m) => {
-                let arg = &SerdeValue::String(key.to_string());
-                match m.get(arg) {
-                    Some(SerdeValue::Option(ref o)) => enum_for_matches::run!(
-                        **(o.as_ref().unwrap()),
-                        {
-                              SerdeValue::U8(ref oo)
-                            | SerdeValue::U16(ref oo)
-                            | SerdeValue::U32(ref oo)
-                            | SerdeValue::U64(ref oo)
-                            | SerdeValue::I8(ref oo)
-                            | SerdeValue::I16(ref oo)
-                            | SerdeValue::I32(ref oo)
-                            | SerdeValue::I64(ref oo)
-                            | SerdeValue::F32(ref oo)
-                            | SerdeValue::F64(ref oo)
-                            | SerdeValue::Char(ref oo)
-                            | SerdeValue::String(ref oo)
-                        },
-                        {
-                            let mut wtr = CsvWriter::from_writer(io::stdout());
-                            wtr.serialize(oo).unwrap_or(());
-                        },
-                        {panic!("Unimplemented request for array, option or dict");}
-                    ),
-                    _ => println!(""),
-                }
+    for keyvalue in keys.into_iter().zip_longest(values) {
+        let (key, value) = match (keyvalue.clone().left(), keyvalue.right()) {
+            (Some(key), Some(value)) => (key, Some(value)),
+            (Some(key), None) => (key, None),
+            (_, None) | (None, _) => continue,
+        };
+
+        let argval = map.get(&key).to_owned();
+
+        let value: String = match value {
+            None => {
+                println!("{}", serde_json::to_string( &argval ).unwrap());
+                continue
             }
-            _ => panic!("FontInfo not a BTreeMap"),
+            Some(value) => value.to_string(),
+        };
+
+        match argval {
+            Some(_) => { map.insert(key, serde_json::from_str::<plist::Value>(&value).unwrap()); }
+            None => {}
         }
+    }
+
+    if values_len != 0 {
+        if let Some(f) = xml_redirect {
+            path = fspath::PathBuf::from(f);
+        }
+        let file = fs::File::create(&path).unwrap();
+        plist::to_writer_xml(file, &map).unwrap();
+        //plist::to_writer_xml(io::stdout(), &map).unwrap();
     }
 }
