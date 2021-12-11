@@ -18,6 +18,7 @@ pub fn clap_subcommand() -> clap::App<'static, 'static> {
                 .multiple(true)
                 .takes_value(true)
                 .allow_hyphen_values(true)
+                .number_of_values(1)
                 .short("k")
                 .long("key")
                 .help("List of key values to display, one per line, in order requested"),
@@ -27,6 +28,7 @@ pub fn clap_subcommand() -> clap::App<'static, 'static> {
                 .multiple(true)
                 .takes_value(true)
                 .allow_hyphen_values(true)
+                .number_of_values(1)
                 .short("v")
                 .long("value")
                 .help("List of values to write, in order requested"),
@@ -80,7 +82,7 @@ pub fn arbitrary(path: &ffi::OsStr, args: &clap::ArgMatches) {
 
         match argval {
             Some(_) => {
-                map.insert(key, serde_json::from_str::<plist::Value>(&value).unwrap());
+                map.insert(key, plist::from_bytes::<plist::Value>(value.as_bytes()).unwrap());
             }
             None => {}
         }
