@@ -221,7 +221,7 @@ dependencies = [
 [[package]]
 name = "glifparser"
 version = "1.1.0"
-source = "git+https://github.com/MFEK/glifparser.rlib?branch=master#ff5af8905354759dc3566939e9dba5685bd0fbe2"
+source = "git+https://github.com/MFEK/glifparser.rlib?branch=master#7896e1a909dd7a91eae51849c88ef7d717c7ecdc"
 dependencies = [
  "integer_or_float",
  "kurbo",
@@ -967,5 +967,6 @@ version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d7d8a75eaf6557bb84a65ace8609883db44a29951042ada9b393151532e41fcb"
 dependencies = [
+ "indexmap",
  "xml-rs",
 ]
