@@ -1,7 +1,9 @@
 use clap;
-use norad::{Font, Glyph};
+use norad::{DataRequest, Font, Glyph};
 use unic_ucd::category::GeneralCategory;
 use unic_ucd::name::Name;
+
+use std::sync::Arc;
 
 pub fn clap_subcommands() -> [clap::App<'static, 'static>; 2] {
     [
@@ -40,7 +42,6 @@ fn unnamed_name(cp: char) -> &'static str {
     }
 }
 
-use std::sync::Arc;
 fn print_glyph(g: Arc<Glyph>) {
     print!("{}\t{}\t", &g.name, codepoints_to_string(&g.codepoints));
     if g.codepoints.len() > 0 {
@@ -66,12 +67,16 @@ fn print_glyph(g: Arc<Glyph>) {
     println!("")
 }
 
-pub fn glyphs(ufo: &Font) {
+pub fn glyphs(path: &std::ffi::OsStr, _args: &clap::ArgMatches) {
+    let mut dr = DataRequest::none();
+    dr.layers(true);
+    let ufo = Font::load_requested_data(path, dr).expect("Failed to load UFO w/norad");
     for g in ufo.default_layer().iter() {
         print_glyph(g.to_owned());
     }
 }
 
-pub fn glyph(g: Arc<Glyph>) {
-    print_glyph(g);
+pub fn glyph(path: &std::ffi::OsStr, _args: &clap::ArgMatches) {
+    let g = Glyph::load(path).unwrap();
+    print_glyph(Arc::new(g));
 }

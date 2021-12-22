@@ -1,5 +1,4 @@
 use clap::{self, ArgMatches};
-use glifparser::Glif;
 use kurbo::ParamCurveArclen;
 use serde_json as sj;
 use MFEKmath::{piecewise::SegmentIterator, Piecewise};
@@ -40,7 +39,8 @@ pub fn clap_subcommand() -> clap::App<'static, 'static> {
         )
 }
 
-pub fn glyphpathlen(glif: Glif<()>, args: &ArgMatches) {
+pub fn glyphpathlen(path: &std::ffi::OsStr, args: &ArgMatches) {
+    let glif = glifparser::read_from_filename::<_, ()>(path).expect("Failed to parse .glif file");
     let mut seglens = vec![];
     let accuracy = args.value_of("accuracy").unwrap().parse().unwrap();
     let outline = glif

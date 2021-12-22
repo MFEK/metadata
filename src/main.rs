@@ -3,10 +3,7 @@
 #![allow(non_snake_case)] // for our name MFEKmetadata
 
 use clap;
-use env_logger;
-use glifparser::Glif;
 use mfek_ipc;
-use norad::{DataRequest, Font, Glyph};
 
 mod glyphs;
 use glyphs::{glyph, glyphs};
@@ -23,7 +20,6 @@ use write_metainfo::write_metainfo;
 pub mod util;
 
 use std::path;
-use std::sync::Arc;
 
 fn parse_args() -> clap::ArgMatches<'static> {
     let mut app = clap::App::new(clap::crate_name!())
@@ -55,46 +51,27 @@ fn parse_args() -> clap::ArgMatches<'static> {
         app = app.subcommand(sc);
     }
 
-    mfek_ipc::display_header("metadata");
     app.get_matches()
 }
 
 #[rustfmt::skip]
 fn main() {
-    env_logger::init();
+    util::init_env_logger();
+    mfek_ipc::display_header("metadata");
     let matches = parse_args();
     let (program, args) = matches.subcommand();
 
     let path = matches.value_of_os("PATH").unwrap();
 
-    let dr = match program {
-        "arbitrary" | "glyph" | "glyphpathlen" | "write_metainfo" => DataRequest::none(),
-        "glyphs" | "glyphslen" => *DataRequest::none().layers(true),
-        _ => unimplemented!(),
-    };
-
-    let ufo = match program {
-        "arbitrary" | "glyph" | "glyphpathlen" | "write_metainfo" => None,
-        _ => Some(Font::load_requested_data(path, dr).unwrap()),
-    };
-
-    let glypho = match program {
-        "glyph" => Some(Glyph::load(path).unwrap()),
-        _ => None,
-    };
-
-    let glif: Option<Glif<()>> = match program {
-        "glyphpathlen" => Some(glifparser::read_from_filename(path).expect("Failed to parse .glif file")),
-        _ => None,
-    };
+    let args = args.expect("Failed to parse args?");
 
     match program {
-        "arbitrary" => arbitrary(path, args.unwrap()),
-        "glyphs" => glyphs(&ufo.unwrap()),
-        "glyphslen" => glyphslen(&ufo.unwrap()),
-        "glyph" => glyph(Arc::new(glypho.unwrap())),
-        "glyphpathlen" => glyphpathlen(glif.unwrap(), args.unwrap()),
-        "write_metainfo" => write_metainfo(path).unwrap(),
+        "arbitrary" => arbitrary(path, &args),
+        "glyphs" => glyphs(path, &args),
+        "glyphslen" => glyphslen(path, &args),
+        "glyph" => glyph(path, &args),
+        "glyphpathlen" => glyphpathlen(path, &args),
+        "write_metainfo" => write_metainfo(path, &args),
         _ => {}
     }
 }

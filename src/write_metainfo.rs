@@ -4,6 +4,7 @@ use plist;
 use std::ffi::OsStr;
 use std::fs;
 use std::path;
+use std::time::Instant;
 
 use crate::exit;
 
@@ -11,7 +12,7 @@ pub fn clap_subcommand() -> clap::App<'static, 'static> {
     clap::SubCommand::with_name("write_metainfo")
 }
 
-pub fn write_metainfo(ufo: &OsStr) -> Result<(), String> {
+pub(crate) fn write_metainfo_impl(ufo: &OsStr) -> Result<(), String> {
     let ufo = path::Path::new(ufo);
     if !ufo.is_dir() {
         exit!("{:?} not a directory", ufo);
@@ -48,4 +49,17 @@ pub fn write_metainfo(ufo: &OsStr) -> Result<(), String> {
         Ok(_) => Ok(()),
         Err(e) => Err(format!("Failed to serialize XML due to: {:?}", e)),
     }
+}
+
+pub fn write_metainfo(path: &OsStr, _args: &clap::ArgMatches) {
+    let now = Instant::now();
+    write_metainfo_impl(path).unwrap_or_else(|e| panic!("Failed to write metainfo.plist! {:?}", e));
+    let elapsed = now.elapsed().as_micros();
+    log::info!(
+        "writing {}/metainfo.plist took {}μs",
+        path.to_owned()
+            .into_string()
+            .unwrap_or_else(|o| format!("<??PATH{:?}>", o)),
+        elapsed
+    );
 }

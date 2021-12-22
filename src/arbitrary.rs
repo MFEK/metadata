@@ -6,7 +6,7 @@ use std::ffi;
 use std::fs;
 use std::path as fspath;
 
-use crate::write_metainfo::write_metainfo;
+use crate::write_metainfo::write_metainfo_impl as write_metainfo;
 
 pub fn clap_subcommand() -> clap::App<'static, 'static> {
     clap::SubCommand::with_name("arbitrary")
@@ -82,7 +82,10 @@ pub fn arbitrary(path: &ffi::OsStr, args: &clap::ArgMatches) {
 
         match argval {
             Some(_) => {
-                map.insert(key, plist::from_bytes::<plist::Value>(value.as_bytes()).unwrap());
+                map.insert(
+                    key,
+                    plist::from_bytes::<plist::Value>(value.as_bytes()).unwrap(),
+                );
             }
             None => {}
         }

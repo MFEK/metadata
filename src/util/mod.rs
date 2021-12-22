@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+use env_logger;
 use log;
 
 #[derive(Debug)]
@@ -84,4 +85,8 @@ macro_rules! exit {
         log::error!($($args)*);
         std::process::exit(1);
     }
+}
+
+pub fn init_env_logger() {
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
 }
