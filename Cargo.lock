@@ -221,7 +221,7 @@ dependencies = [
 [[package]]
 name = "glifparser"
 version = "1.1.0"
-source = "git+https://github.com/MFEK/glifparser.rlib?branch=master#7896e1a909dd7a91eae51849c88ef7d717c7ecdc"
+source = "git+https://github.com/MFEK/glifparser.rlib?branch=master#bc8376f1a575dfdeb49a7b8fef6d1053c2a29807"
 dependencies = [
  "integer_or_float",
  "kurbo",
@@ -387,7 +387,7 @@ checksum = "308cc39be01b73d0d18f82a0e7b2a3df85245f84af96fdddc5d202d27e47b86a"
 [[package]]
 name = "mfek-ipc"
 version = "0.0.0-beta1"
-source = "git+https://github.com/MFEK/ipc.rlib#695933d8bbee2a9066a969529be525b9ea1dc638"
+source = "git+https://github.com/MFEK/ipc.rlib#e42ed02a1104a5d4a1df8058a45b698cf49cb84f"
 dependencies = [
  "atty",
  "colored",
