@@ -73,8 +73,10 @@ pub fn arg_validator_suffix(f: &impl Fn(String) -> Result<(), String>, suffix: c
 
 macro_rules! exit {
     ($($args:tt)*) => {
+    {
         log::error!($($args)*);
         std::process::exit(1);
+    }
     }
 }
 pub(crate) use exit;

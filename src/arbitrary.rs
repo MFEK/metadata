@@ -6,9 +6,10 @@ use std::ffi;
 use std::fs;
 use std::io::Write as _;
 use std::path as fspath;
+use std::time::Instant;
 
 use crate::util;
-use crate::write_metainfo::write_metainfo_impl as write_metainfo;
+use crate::write_metainfo::write_metainfo_impl;
 
 pub fn clap_subcommand() -> clap::App<'static, 'static> {
     clap::SubCommand::with_name("arbitrary")
@@ -60,7 +61,8 @@ pub fn clap_subcommand() -> clap::App<'static, 'static> {
 }
 
 pub fn arbitrary(path: &ffi::OsStr, args: &clap::ArgMatches) {
-    drop(write_metainfo(path));
+    let now = Instant::now();
+    drop(write_metainfo_impl(path));
     let mut path = fspath::PathBuf::from(path);
     let keys: Vec<String> = args.values_of("keys").map(|k| k.map(|s| s.to_owned()).collect()).unwrap_or(vec![]);
     let values: Vec<String> = args.values_of("values").map(|v| v.map(|s| s.to_owned()).collect()).unwrap_or(vec![]);
@@ -115,12 +117,15 @@ pub fn arbitrary(path: &ffi::OsStr, args: &clap::ArgMatches) {
         }
         let mut file = match fs::File::create(&path) {
             Ok(f) => f,
-            Err(e) => {
-                util::exit!("Failed to write file: std::fs/io error: {:?}", e);
-            }
+            Err(e) => util::exit!("Failed to create file {:?}! I/O error: {:?}", &path, e),
         };
-        plist::to_writer_xml(&file, &map).unwrap();
-        file.write(b"\n").expect(&format!("Failed to write final newline to plist {:?}", &path));
-        //plist::to_writer_xml(io::stdout(), &map).unwrap();
+        if let Err(e) = plist::to_writer_xml(&file, &map) {
+            util::exit!("Failed to write XML to {:?}! plist.rlib error: {:?}", &path, e);
+        }
+        if let Err(e) = file.write(b"\n") {
+            util::exit!("Failed to write final newline to plist {:?}! I/O error: {:?}", &path, e);
+        }
     }
+
+    log::trace!("Completed in {}µs", now.elapsed().as_micros());
 }
