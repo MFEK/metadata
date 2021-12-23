@@ -6,7 +6,7 @@ use std::fs;
 use std::path;
 use std::time::Instant;
 
-use crate::exit;
+use crate::util::exit;
 
 pub fn clap_subcommand() -> clap::App<'static, 'static> {
     clap::SubCommand::with_name("write_metainfo")

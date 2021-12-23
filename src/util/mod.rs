@@ -79,13 +79,13 @@ pub fn arg_validator_suffix(
     }
 }
 
-#[macro_export]
 macro_rules! exit {
     ($($args:tt)*) => {
         log::error!($($args)*);
         std::process::exit(1);
     }
 }
+pub(crate) use exit;
 
 pub fn init_env_logger() {
     env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
