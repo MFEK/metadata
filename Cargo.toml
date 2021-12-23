@@ -1,6 +1,6 @@
 [package]
 name = "MFEKmetadata"
-version = "0.0.1-beta1"
+version = "0.0.2-beta1"
 authors = ["Fredrick Brennan <copypaste@kittens.ph>"]
 description = "Basic metadata fetcher for the MFEK project. It interrogates UFO fonts, for now mostly fontinfo.plist"
 edition = "2021"
