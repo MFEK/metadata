@@ -4,23 +4,27 @@ use plist;
 
 use std::ffi;
 use std::fs;
+use std::io::Write as _;
 use std::path as fspath;
 
+use crate::util;
 use crate::write_metainfo::write_metainfo_impl as write_metainfo;
 
 pub fn clap_subcommand() -> clap::App<'static, 'static> {
     clap::SubCommand::with_name("arbitrary")
-        .about("Dumps key values")
+        .setting(clap::AppSettings::DeriveDisplayOrder)
+        .about("Performs arbitrary operations on a plist file, by default a font's fontinfo.plist.\n\nNote: The arguments `-k`, `-v`, and `-d` must be provided multiple times for multiple values, not delimited.")
         .version(env!("CARGO_PKG_VERSION"))
         .arg(
             clap::Arg::with_name("keys")
-                .required(true)
+                .required_unless("delete-keys")
                 .multiple(true)
                 .takes_value(true)
                 .allow_hyphen_values(true)
                 .number_of_values(1)
                 .short("k")
                 .long("key")
+                .value_name("key")
                 .help("List of key values to display, one per line, in order requested"),
         )
         .arg(
@@ -31,24 +35,39 @@ pub fn clap_subcommand() -> clap::App<'static, 'static> {
                 .number_of_values(1)
                 .short("v")
                 .long("value")
+                .value_name("value")
                 .help("List of values to write, in order requested"),
+        )
+        .arg(
+            clap::Arg::with_name("delete-keys")
+                .multiple(true)
+                .takes_value(true)
+                .allow_hyphen_values(true)
+                .number_of_values(1)
+                .short("d")
+                .long("delete")
+                .value_name("key")
+                .help("List of keys to delete from the plist"),
         )
         .arg(
             clap::Arg::with_name("xml-redirect")
                 .takes_value(true)
                 .short("X")
                 .long("xml-redirect")
-                .help("Redirect XML to this path instead. Use /dev/stdout or /dev/stderr if that's what you want, `-` not recognized."),
+                .value_name("FILE")
+                .help("Redirect XML to this path instead. Use /dev/stdout or /dev/stderr if that's what you want, `-` not recognized.")
         )
 }
 
 pub fn arbitrary(path: &ffi::OsStr, args: &clap::ArgMatches) {
     drop(write_metainfo(path));
     let mut path = fspath::PathBuf::from(path);
-    let keys: Vec<String> = args.values_of("keys").unwrap().map(|s| s.to_owned()).collect();
+    let keys: Vec<String> = args.values_of("keys").map(|k| k.map(|s| s.to_owned()).collect()).unwrap_or(vec![]);
     let values: Vec<String> = args.values_of("values").map(|v| v.map(|s| s.to_owned()).collect()).unwrap_or(vec![]);
+    let to_delete: Vec<&str> = args.values_of("delete-keys").map(|dk| dk.collect()).unwrap_or(vec![]);
     let xml_redirect: Option<_> = args.value_of("xml-redirect");
     let values_len = values.len();
+    let delete_len = to_delete.len();
     let is_plist = path.extension() != Some(&ffi::OsString::from("plist"));
     if is_plist {
         path.push("fontinfo.plist");
@@ -60,33 +79,48 @@ pub fn arbitrary(path: &ffi::OsStr, args: &clap::ArgMatches) {
         let (key, value) = match (keyvalue.clone().left(), keyvalue.right()) {
             (Some(key), Some(value)) => (key, Some(value)),
             (Some(key), None) => (key, None),
-            (_, None) | (None, _) => continue,
+            (None, None) | (None, Some(_)) => continue,
         };
 
         let argval = map.get(&key).to_owned();
 
         let value: String = match value {
             None => {
+                if let None = argval {
+                    log::warn!("No value for {}", &key);
+                }
                 println!("{}", serde_json::to_string(&argval).unwrap());
                 continue;
             }
             Some(value) => value.to_string(),
         };
 
-        match argval {
+        map.insert(key, plist::from_bytes::<plist::Value>(value.as_bytes()).unwrap());
+    }
+
+    for dk in to_delete {
+        match map.remove(dk) {
             Some(_) => {
-                map.insert(key, plist::from_bytes::<plist::Value>(value.as_bytes()).unwrap());
+                log::debug!("Removed {}", dk);
             }
-            None => {}
+            None => {
+                log::warn!("Tried to remove non-existent key {}", dk);
+            }
         }
     }
 
-    if values_len != 0 {
+    if values_len != 0 || delete_len != 0 {
         if let Some(f) = xml_redirect {
             path = fspath::PathBuf::from(f);
         }
-        let file = fs::File::create(&path).unwrap();
-        plist::to_writer_xml(file, &map).unwrap();
+        let mut file = match fs::File::create(&path) {
+            Ok(f) => f,
+            Err(e) => {
+                util::exit!("Failed to write file: std::fs/io error: {:?}", e);
+            }
+        };
+        plist::to_writer_xml(&file, &map).unwrap();
+        file.write(b"\n").expect(&format!("Failed to write final newline to plist {:?}", &path));
         //plist::to_writer_xml(io::stdout(), &map).unwrap();
     }
 }
