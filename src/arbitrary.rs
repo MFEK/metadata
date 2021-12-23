@@ -38,22 +38,15 @@ pub fn clap_subcommand() -> clap::App<'static, 'static> {
                 .takes_value(true)
                 .short("X")
                 .long("xml-redirect")
-                .help("Redirect XML to this path instead. Use /dev/stdout or /dev/stderr if that's what you want, `-` not recognized.")
+                .help("Redirect XML to this path instead. Use /dev/stdout or /dev/stderr if that's what you want, `-` not recognized."),
         )
 }
 
 pub fn arbitrary(path: &ffi::OsStr, args: &clap::ArgMatches) {
     drop(write_metainfo(path));
     let mut path = fspath::PathBuf::from(path);
-    let keys: Vec<String> = args
-        .values_of("keys")
-        .unwrap()
-        .map(|s| s.to_owned())
-        .collect();
-    let values: Vec<String> = args
-        .values_of("values")
-        .map(|v| v.map(|s| s.to_owned()).collect())
-        .unwrap_or(vec![]);
+    let keys: Vec<String> = args.values_of("keys").unwrap().map(|s| s.to_owned()).collect();
+    let values: Vec<String> = args.values_of("values").map(|v| v.map(|s| s.to_owned()).collect()).unwrap_or(vec![]);
     let xml_redirect: Option<_> = args.value_of("xml-redirect");
     let values_len = values.len();
     let is_plist = path.extension() != Some(&ffi::OsString::from("plist"));
@@ -82,10 +75,7 @@ pub fn arbitrary(path: &ffi::OsStr, args: &clap::ArgMatches) {
 
         match argval {
             Some(_) => {
-                map.insert(
-                    key,
-                    plist::from_bytes::<plist::Value>(value.as_bytes()).unwrap(),
-                );
+                map.insert(key, plist::from_bytes::<plist::Value>(value.as_bytes()).unwrap());
             }
             None => {}
         }

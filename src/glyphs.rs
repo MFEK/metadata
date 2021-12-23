@@ -8,8 +8,7 @@ use std::sync::Arc;
 pub fn clap_subcommands() -> [clap::App<'static, 'static>; 2] {
     [
         clap::SubCommand::with_name("glyphs").about("Dumps the font's glyphs"),
-        clap::SubCommand::with_name("glyph")
-            .about("Dumps a single font glyph in the format of `MFEKmetadata glyphs`"),
+        clap::SubCommand::with_name("glyph").about("Dumps a single font glyph in the format of `MFEKmetadata glyphs`"),
     ]
 }
 
@@ -49,19 +48,15 @@ fn print_glyph(g: Arc<Glyph>) {
             "{}\t",
             (g.codepoints
                 .iter()
-                .map(|cp| Name::of(*cp)
-                    .map(|n| name_to_string(&n))
-                    .unwrap_or(unnamed_name(*cp).to_string()))
+                .map(|cp| Name::of(*cp).map(|n| name_to_string(&n)).unwrap_or(unnamed_name(*cp).to_string()))
                 .collect::<Vec<String>>())
             .join(",")
         );
         print!(
             "{}\t",
-            (g.codepoints
-                .iter()
-                .map(|cp| format!("{:?}", GeneralCategory::of(*cp))))
-            .collect::<Vec<String>>()
-            .join(",")
+            (g.codepoints.iter().map(|cp| format!("{:?}", GeneralCategory::of(*cp))))
+                .collect::<Vec<String>>()
+                .join(",")
         );
     }
     println!("")

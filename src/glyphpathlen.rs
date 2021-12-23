@@ -21,12 +21,7 @@ pub fn clap_subcommand() -> clap::App<'static, 'static> {
                 .short("j")
                 .help("Display one line: sum of joined path"),
         )
-        .arg(
-            clap::Arg::with_name("json")
-                .long("json")
-                .short("J")
-                .help("Output JSON instead"),
-        )
+        .arg(clap::Arg::with_name("json").long("json").short("J").help("Output JSON instead"))
         .arg(
             clap::Arg::with_name("accuracy")
                 .long("accuracy")
@@ -43,10 +38,7 @@ pub fn glyphpathlen(path: &std::ffi::OsStr, args: &ArgMatches) {
     let glif = glifparser::read_from_filename::<_, ()>(path).expect("Failed to parse .glif file");
     let mut seglens = vec![];
     let accuracy = args.value_of("accuracy").unwrap().parse().unwrap();
-    let outline = glif
-        .outline
-        .as_ref()
-        .expect("Glif contains no outline data");
+    let outline = glif.outline.as_ref().expect("Glif contains no outline data");
     let pw = Piecewise::from(outline);
 
     for contour in pw.segs.iter() {
@@ -82,13 +74,7 @@ pub fn glyphpathlen(path: &std::ffi::OsStr, args: &ArgMatches) {
             println!("{}", sj::to_string(&seglens).unwrap());
         } else {
             for sl in seglens {
-                println!(
-                    "{}",
-                    sl.iter()
-                        .map(|f| format!("{:.4}", f))
-                        .collect::<Vec<_>>()
-                        .join(" ")
-                );
+                println!("{}", sl.iter().map(|f| format!("{:.4}", f)).collect::<Vec<_>>().join(" "));
             }
         }
     } else if args.is_present("joined") {

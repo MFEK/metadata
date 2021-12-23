@@ -33,19 +33,12 @@ pub(crate) fn write_metainfo_impl(ufo: &OsStr) -> Result<(), String> {
         }
     };
     log::trace!("metainfo: {:?}", &metainfo);
-    metainfo.insert(
-        "creator".to_string(),
-        plist::Value::String("org.MFEK".to_string()),
-    );
+    metainfo.insert("creator".to_string(), plist::Value::String("org.MFEK".to_string()));
     let fsfile = match fs::File::create(&metainfo_f) {
         Ok(f) => f,
         Err(e) => Err(format!("Failed to create file {:?}: {:?}", &metainfo_f, e))?,
     };
-    match plist::to_writer_xml_with_options(
-        fsfile,
-        &metainfo,
-        &plist::XmlWriteOptions::default().indent_string("    "),
-    ) {
+    match plist::to_writer_xml_with_options(fsfile, &metainfo, &plist::XmlWriteOptions::default().indent_string("    ")) {
         Ok(_) => Ok(()),
         Err(e) => Err(format!("Failed to serialize XML due to: {:?}", e)),
     }
@@ -57,9 +50,7 @@ pub fn write_metainfo(path: &OsStr, _args: &clap::ArgMatches) {
     let elapsed = now.elapsed().as_micros();
     log::info!(
         "writing {}/metainfo.plist took {}μs",
-        path.to_owned()
-            .into_string()
-            .unwrap_or_else(|o| format!("<??PATH{:?}>", o)),
+        path.to_owned().into_string().unwrap_or_else(|o| format!("<??PATH{:?}>", o)),
         elapsed
     );
 }
