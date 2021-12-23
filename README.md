@@ -3,7 +3,19 @@
 Basic metadata fetcher for the MFEK project. It interrogates UFO fonts, for now mostly fontinfo.plist&mdash;also determines a list of glyphs.
 
 ```
-MFEKmetadata 0.0.1-beta1
+      ___           ___         ___           ___     
+     /\  \         /\__\       /\__\         /|  |    
+    |::\  \       /:/ _/_     /:/ _/_       |:|  |    
+    |:|:\  \     /:/ /\__\   /:/ /\__\      |:|  |    
+  __|:|\:\  \   /:/ /:/  /  /:/ /:/ _/_   __|:|  |    
+ /::::|_\:\__\ /:/_/:/  /  /:/_/:/ /\__\ /\ |:|__|____                     __                __           __         
+ \:\~~\  \/__/ \:\/:/  /   \:\/:/ /:/  / \:\/:::::/__/   ____ ___   ___   / /_  ____ _  ____/ /  ____ _  / /_  ____ _
+  \:\  \        \::/__/     \::/_/:/  /   \::/~~/~      / __ `__ \ / _ \ / __/ / __ `/ / __  /  / __ `/ / __/ / __ `/
+   \:\  \        \:\  \      \:\/:/  /     \:\~~\      / / / / / //  __// /_  / /_/ / / /_/ /  / /_/ / / /_  / /_/ / 
+    \:\__\        \:\__\      \::/  /       \:\__\    /_/ /_/ /_/ \___/ \__/  \__,_/  \__,_/   \__,_/  \__/  \__,_/  
+     \/__/         \/__/       \/__/         \/__/                                                                   
+
+MFEKmetadata 0.0.2-beta1
 Fredrick Brennan <copypaste@kittens.ph>
 Basic metadata fetcher for the MFEK project. It interrogates UFO fonts, for now mostly fontinfo.plist
 
@@ -18,7 +30,10 @@ ARGS:
     <PATH>    Sets the input file (glif/UFO/rarely plist) to use
 
 SUBCOMMANDS:
-    arbitrary         Dumps key values
+    arbitrary         Performs arbitrary operations on a plist file, by default a font's fontinfo.plist.
+                      
+                      Note: The arguments `-k`, `-v`, and `-d` must be provided multiple times for multiple values,
+                      not delimited.
     glyph             Dumps a single font glyph in the format of `MFEKmetadata glyphs`
     glyphpathlen      Show length of contours in a glyph (.glif) on separate lines
     glyphs            Dumps the font's glyphs
@@ -28,21 +43,24 @@ SUBCOMMANDS:
 ```
 
 ```
-MFEKmetadata-arbitrary 0.0.1-beta1
-Dumps key values
+MFEKmetadata-arbitrary 0.0.2-beta1
+Performs arbitrary operations on a plist file, by default a font's fontinfo.plist.
+
+Note: The arguments `-k`, `-v`, and `-d` must be provided multiple times for multiple values, not delimited.
 
 USAGE:
-    MFEKmetadata <PATH> arbitrary [OPTIONS] --key <keys>...
+    MFEKmetadata <PATH> arbitrary [OPTIONS] --key <key>...
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
 
 OPTIONS:
-    -k, --key <keys>...                  List of key values to display, one per line, in order requested
-    -v, --value <values>...              List of values to write, in order requested
-    -X, --xml-redirect <xml-redirect>    Redirect XML to this path instead. Use /dev/stdout or /dev/stderr if that's
-                                         what you want, `-` not recognized.
+    -k, --key <key>...           List of key values to display, one per line, in order requested
+    -v, --value <value>...       List of values to write, in order requested
+    -d, --delete <key>...        List of keys to delete from the plist
+    -X, --xml-redirect <FILE>    Redirect XML to this path instead. Use /dev/stdout or /dev/stderr if that's what you
+                                 want, `-` not recognized.
 ```
 
 ```
