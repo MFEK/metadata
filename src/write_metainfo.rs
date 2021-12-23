@@ -49,7 +49,7 @@ pub fn write_metainfo(path: &OsStr, _args: &clap::ArgMatches) {
     write_metainfo_impl(path).unwrap_or_else(|e| panic!("Failed to write metainfo.plist! {:?}", e));
     let elapsed = now.elapsed().as_micros();
     log::info!(
-        "writing {}/metainfo.plist took {}μs",
+        "writing {}/metainfo.plist took {}µs",
         path.to_owned().into_string().unwrap_or_else(|o| format!("<??PATH{:?}>", o)),
         elapsed
     );
