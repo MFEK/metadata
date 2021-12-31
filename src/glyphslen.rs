@@ -6,8 +6,7 @@ pub fn clap_subcommand() -> clap::App<'static, 'static> {
 }
 
 pub fn glyphslen(path: &std::ffi::OsStr, _args: &clap::ArgMatches) {
-    let mut dr = DataRequest::none();
-    dr.layers(true);
-    let ufo = Font::load_requested_data(path, dr).expect("Failed to load UFO w/norad");
+    let dr = DataRequest::none().layers(true).data(true);
+    let ufo = Font::load_requested_data(path, &dr).expect("Failed to load UFO w/norad");
     println!("{}", ufo.default_layer().len())
 }
