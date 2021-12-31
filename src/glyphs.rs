@@ -118,6 +118,9 @@ pub fn glyphs(path: &std::ffi::OsStr, args: &clap::ArgMatches) {
             // If we're sorting by codepoint, we want to list codepoints multiple times.
             // So break the norad Glyph out of its Arc, then just reset its "codepoints".
             let mut g = Clone::clone(&**g);
+            if g.codepoints.len() == 0 && hide_unencoded {
+                return String::new();
+            }
             if do_sort {
                 let codepoints = g.codepoints.to_owned();
                 for cp in codepoints {
@@ -132,7 +135,6 @@ pub fn glyphs(path: &std::ffi::OsStr, args: &clap::ArgMatches) {
             }
             ret.join("")
         })
-        .filter(|r| !(hide_unencoded && r.chars().next() == Some('\t')))
         .collect();
     if args.is_present("sort") {
         glyph_rows.sort_by(|a, b| sort_rows_callback(a, b, unencoded_at_top));
