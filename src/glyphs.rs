@@ -4,7 +4,6 @@ use unic_ucd::category::GeneralCategory;
 use unic_ucd::name::Name;
 
 use std::cmp::Ordering;
-use std::sync::Arc;
 
 pub fn clap_subcommands() -> [clap::App<'static, 'static>; 2] {
     [
@@ -113,11 +112,9 @@ pub fn glyphs(path: &std::ffi::OsStr, args: &clap::ArgMatches) {
     let mut glyph_rows: Vec<_> = ufo
         .default_layer()
         .iter()
-        .map(|g: &Arc<Glyph>| {
+        .map(|g| {
+            let mut g = g.clone();
             let mut ret = vec![];
-            // If we're sorting by codepoint, we want to list codepoints multiple times.
-            // So break the norad Glyph out of its Arc, then just reset its "codepoints".
-            let mut g = Clone::clone(&**g);
             if g.codepoints.len() == 0 && hide_unencoded {
                 return String::new();
             }
