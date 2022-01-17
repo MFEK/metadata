@@ -17,11 +17,12 @@ dependencies = [
 
 [[package]]
 name = "MFEKmetadata"
-version = "0.0.2-beta1"
+version = "0.0.3-beta1"
 dependencies = [
  "MFEKmath",
  "clap",
  "env_logger",
+ "fslock",
  "glifparser",
  "itertools",
  "kurbo",
@@ -189,6 +190,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f41b048a94555da0f42f1d632e2e19510084fb8e303b0daa2816e733fb3644a0"
 dependencies = [
  "libc",
+]
+
+[[package]]
+name = "fslock"
+version = "0.2.2"
+source = "git+https://github.com/MFEK/fslock.rlib?branch=preservation#0068bbebb769817707afb52c4b992aaf31a6d640"
+dependencies = [
+ "libc",
+ "winapi 0.3.9",
 ]
 
 [[package]]
