@@ -467,7 +467,7 @@ dependencies = [
 [[package]]
 name = "norad"
 version = "0.6.0"
-source = "git+https://github.com/linebender/norad#868fbe7014734f8e100d7f924bc0d62070a55d3e"
+source = "git+https://github.com/linebender/norad#2789dbeedc64a84f41e87e1214c83e930685b5d2"
 dependencies = [
  "plist",
  "quick-xml",
