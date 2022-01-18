@@ -195,7 +195,7 @@ dependencies = [
 [[package]]
 name = "fslock"
 version = "0.2.2"
-source = "git+https://github.com/MFEK/fslock.rlib?branch=preservation#0068bbebb769817707afb52c4b992aaf31a6d640"
+source = "git+https://github.com/MFEK/fslock.rlib?branch=preservation#81c197d4dc1350561dee953167df57de06fd67fa"
 dependencies = [
  "libc",
  "winapi 0.3.9",
