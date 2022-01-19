@@ -38,15 +38,20 @@ pub(crate) fn write_metainfo_impl(ufo: &OsStr) -> Result<path::PathBuf, io::Erro
         Ok(Err(e)) => Err(e)?,
         Err(e) => Err(e)?,
     };
+    #[cfg(target_family = "unix")]
     let mut fsfile = unsafe {
-        use std::os::unix::io::FromRawFd;
+        use std::os::unix::io::FromRawFd as _;
         fs::File::from_raw_fd(filelock.raw())
+    };
+    #[cfg(target_family = "windows")]
+    let mut fsfile = unsafe {
+        use std::os::windows::io::FromRawHandle as _;
+        fs::File::from_raw_handle(filelock.raw())
     };
     match fsfile.write(METAINFO) {
         Ok(_) => Ok(()),
         Err(e) => Err(e),
     }?;
-    mem::forget(fsfile);
     Ok(metainfo_f)
 }
 
