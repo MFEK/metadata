@@ -105,17 +105,6 @@ OPTIONS:
         --accuracy <accuracy>    Precision of length calculation [default: 0.01]
 ```
 
-## Building
-
-This MFEK module uses `git` submodules. So, after you clone, you have to run:
-
-```bash
-git submodule init
-git submodule update
-```
-
-Before you call `cargo build`.
-
 ## License
 
 ```
