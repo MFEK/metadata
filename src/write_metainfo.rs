@@ -3,7 +3,6 @@ use clap;
 use std::ffi::OsStr;
 use std::fs::{self, File};
 use std::io::{self, Read as _, Write as _};
-use std::mem;
 use std::path;
 use std::time::Instant;
 
