@@ -21,14 +21,15 @@ pub mod util;
 
 use std::path;
 
-fn parse_args() -> clap::ArgMatches<'static> {
-    let mut app = clap::App::new(clap::crate_name!())
+fn parse_args() -> clap::ArgMatches {
+    let mut app = clap::Command::new(clap::crate_name!())
         .version(env!("CARGO_PKG_VERSION"))
         .author(clap::crate_authors!())
         .about(clap::crate_description!())
-        .setting(clap::AppSettings::SubcommandRequiredElseHelp)
+        .subcommand_required(true)
+        .arg_required_else_help(true)
         .arg(
-            clap::Arg::with_name("PATH")
+            clap::Arg::new("PATH")
                 .help("Sets the input file (glif/UFO/rarely plist) to use")
                 .required(true)
                 .index(1)
@@ -59,11 +60,9 @@ fn main() {
     util::init_env_logger();
     mfek_ipc::display_header("metadata");
     let matches = parse_args();
-    let (program, args) = matches.subcommand();
+    let (program, args) = matches.subcommand().expect("Failed to parse args?");
 
     let path = matches.value_of_os("PATH").unwrap();
-
-    let args = args.expect("Failed to parse args?");
 
     match program {
         "arbitrary" => arbitrary(path, &args),
