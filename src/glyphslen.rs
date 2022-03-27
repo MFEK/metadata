@@ -1,8 +1,8 @@
 use clap;
 use norad::{DataRequest, Font};
 
-pub fn clap_subcommand() -> clap::App<'static, 'static> {
-    clap::SubCommand::with_name("glyphslen").about("Show number of glyphs in font")
+pub fn clap_subcommand<'help>() -> clap::Command<'help> {
+    clap::Command::new("glyphslen").about("Show number of glyphs in font")
 }
 
 pub fn glyphslen(path: &std::ffi::OsStr, _args: &clap::ArgMatches) {

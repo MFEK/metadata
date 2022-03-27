@@ -19,8 +19,8 @@ static METAINFO: &[u8] = br#"<?xml version="1.0" encoding="UTF-8"?>
     </dict>
 </plist>"#;
 
-pub fn clap_subcommand() -> clap::App<'static, 'static> {
-    clap::SubCommand::with_name("write_metainfo")
+pub fn clap_subcommand<'help>() -> clap::Command<'help> {
+    clap::Command::new("write_metainfo")
 }
 
 pub(crate) fn write_metainfo_impl(ufo: &OsStr) -> Result<path::PathBuf, io::Error> {

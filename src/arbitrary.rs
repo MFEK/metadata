@@ -11,49 +11,49 @@ use std::time::Instant;
 use crate::util;
 use crate::write_metainfo::write_metainfo_impl;
 
-pub fn clap_subcommand() -> clap::App<'static, 'static> {
-    clap::SubCommand::with_name("arbitrary")
+pub fn clap_subcommand<'help>() -> clap::Command<'help> {
+    clap::Command::new("arbitrary")
         .setting(clap::AppSettings::DeriveDisplayOrder)
         .about("Performs arbitrary operations on a plist file, by default a font's fontinfo.plist.\n\nNote: The arguments `-k`, `-v`, and `-d` must be provided multiple times for multiple values, not delimited.")
         .version(env!("CARGO_PKG_VERSION"))
         .arg(
-            clap::Arg::with_name("keys")
-                .required_unless("delete-keys")
-                .multiple(true)
+            clap::Arg::new("keys")
+                .required_unless_present("delete-keys")
+                .multiple_occurrences(true)
                 .takes_value(true)
                 .allow_hyphen_values(true)
                 .number_of_values(1)
-                .short("k")
+                .short('k')
                 .long("key")
                 .value_name("key")
                 .help("List of key values to display, one per line, in order requested"),
         )
         .arg(
-            clap::Arg::with_name("values")
-                .multiple(true)
+            clap::Arg::new("values")
+                .multiple_occurrences(true)
                 .takes_value(true)
                 .allow_hyphen_values(true)
                 .number_of_values(1)
-                .short("v")
+                .short('v')
                 .long("value")
                 .value_name("value")
                 .help("List of values to write, in order requested"),
         )
         .arg(
-            clap::Arg::with_name("delete-keys")
-                .multiple(true)
+            clap::Arg::new("delete-keys")
+                .multiple_occurrences(true)
                 .takes_value(true)
                 .allow_hyphen_values(true)
                 .number_of_values(1)
-                .short("d")
+                .short('d')
                 .long("delete")
                 .value_name("key")
                 .help("List of keys to delete from the plist"),
         )
         .arg(
-            clap::Arg::with_name("xml-redirect")
+            clap::Arg::new("xml-redirect")
                 .takes_value(true)
-                .short("X")
+                .short('X')
                 .long("xml-redirect")
                 .value_name("FILE")
                 .help("Redirect XML to this path instead. Use /dev/stdout or /dev/stderr if that's what you want, `-` not recognized.")

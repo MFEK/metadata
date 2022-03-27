@@ -5,33 +5,33 @@ use unic_ucd::name::Name;
 
 use std::cmp::Ordering;
 
-pub fn clap_subcommands() -> [clap::App<'static, 'static>; 2] {
+pub fn clap_subcommands<'help>() -> [clap::Command<'help>; 2] {
     [
-        clap::SubCommand::with_name("glyphs")
+        clap::Command::new("glyphs")
             .about("Dumps the font's glyphs")
             .setting(clap::AppSettings::DeriveDisplayOrder)
             .arg(
-                clap::Arg::with_name("sort")
+                clap::Arg::new("sort")
                     .takes_value(false)
-                    .short("s")
+                    .short('s')
                     .long("sort")
                     .help("Sort by Unicode char"),
             )
             .arg(
-                clap::Arg::with_name("hide-unencoded")
+                clap::Arg::new("hide-unencoded")
                     .takes_value(false)
-                    .short("H")
+                    .short('H')
                     .long("hide-unencoded")
                     .help("Don't show unencoded glyphs in listing"),
             )
             .arg(
-                clap::Arg::with_name("unencoded-at-top")
+                clap::Arg::new("unencoded-at-top")
                     .takes_value(false)
-                    .short("u")
+                    .short('u')
                     .long("unencoded-at-top")
                     .help("Glyphs without encodings go to the top"),
             ),
-        clap::SubCommand::with_name("glyph").about("Dumps a single font glyph in the format of `MFEKmetadata glyphs`"),
+        clap::Command::new("glyph").about("Dumps a single font glyph in the format of `MFEKmetadata glyphs`"),
     ]
 }
 
