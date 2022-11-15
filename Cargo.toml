@@ -8,7 +8,7 @@ license = "Apache-2.0"
 keywords = ["ufo", "font-format", "glif", "fonts"]
 
 [dependencies]
-clap = "2.33.3"
+clap = "4.0.25"
 norad = { git = "https://github.com/linebender/norad" }
 serde_json = "1"
 unic-ucd = "0.9"
