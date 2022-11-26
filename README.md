@@ -15,7 +15,7 @@ Basic metadata fetcher for the MFEK project. It interrogates UFO fonts, for now 
     \:\__\        \:\__\      \::/  /       \:\__\    /_/ /_/ /_/ \___/ \__/  \__,_/  \__,_/   \__,_/  \__/  \__,_/  
      \/__/         \/__/       \/__/         \/__/                                                                   
 
-MFEKmetadata 0.0.2-beta1
+MFEKmetadata 0.0.4-beta1
 Fredrick Brennan <copypaste@kittens.ph>
 Basic metadata fetcher for the MFEK project. It interrogates UFO fonts, for now mostly fontinfo.plist
 

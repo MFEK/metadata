@@ -66,9 +66,9 @@ fn unnamed_name(cp: char) -> &'static str {
 
 fn glyph_row(g: &Glyph, codepoint_first: bool) -> String {
     let mut ret = if codepoint_first {
-        format!("{}\t{}\t", codepoints_to_string(&g.codepoints), &g.name)
+        format!("{}\t{}\t", codepoints_to_string(&g.codepoints), &g.name())
     } else {
-        format!("{}\t{}\t", &g.name, codepoints_to_string(&g.codepoints))
+        format!("{}\t{}\t", &g.name(), codepoints_to_string(&g.codepoints))
     };
     if g.codepoints.len() > 0 {
         ret.push_str(&format!(

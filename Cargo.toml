@@ -1,6 +1,6 @@
 [package]
 name = "MFEKmetadata"
-version = "0.0.3-beta1"
+version = "0.0.4-beta1"
 authors = ["Fredrick Brennan <copypaste@kittens.ph>"]
 description = "Basic metadata fetcher for the MFEK project. It interrogates UFO fonts, for now mostly fontinfo.plist"
 edition = "2021"
@@ -20,7 +20,7 @@ env_logger = "0.9"
 itertools = "*"
 
 # Our modules
-glifparser = { git = "https://github.com/MFEK/glifparser.rlib", branch = "master", default-features = false }
+glifparser = { git = "https://github.com/MFEK/glifparser.rlib", branch = "master", default-features = false, features = ["mfek", "skia"] }
 #glifparser = { path = "../glifparser.rlib", default-features = false } # for development
 MFEKmath = { git = "https://github.com/MFEK/math.rlib", branch = "main", default-features = false }
 #MFEKmath = { path = "../math.rlib", default-features = false } # for development
