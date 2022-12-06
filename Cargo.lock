@@ -592,6 +592,7 @@ checksum = "1885e79c1fc4b10f0e172c475f458b7f7b93061064d98c3293e98c5ba0c8b399"
 dependencies = [
  "autocfg",
  "hashbrown",
+ "serde",
 ]
 
 [[package]]
@@ -863,8 +864,9 @@ dependencies = [
 [[package]]
 name = "norad"
 version = "0.8.0"
-source = "git+https://github.com/linebender/norad#9a2bfbc782e8a86fa9b0858fb9ba3291873f44e7"
+source = "git+https://github.com/linebender/norad#1ef6f20d9317f8b51a6fc46aafc119dace5aa316"
 dependencies = [
+ "indexmap",
  "plist",
  "quick-xml",
  "serde",
