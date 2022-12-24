@@ -1,9 +1,4 @@
-let
-  name = "MFEKmetadata";
-  description = "Basic font metadata fetcher/updater for the MFEK project";
-in {
-  inherit name description;
-
+{
   inputs = {
     nixpkgs.url      = github:nixos/nixpkgs/release-22.05;
     utils.url        = github:numtide/flake-utils;
@@ -17,7 +12,10 @@ in {
     };
   };
 
-  outputs = { self, nixpkgs, rust-overlay, utils, naersk, ... } @ inputs: let
+  outputs = { self, nixpkgs, rust-overlay, utils, naersk, ... } @ inputs:
+    let
+      name = "MFEKmetadata";
+      description = "Basic font metadata fetcher/updater for the MFEK project";
       overlays = [ rust-overlay.overlays.default ];
       # Our supported systems are the same supported systems as the Rust binaries
       systems = builtins.attrNames inputs.rust-overlay.packages;
