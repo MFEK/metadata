@@ -5,6 +5,11 @@
     rust-overlay.url = github:oxalica/rust-overlay;
     naersk.url       = github:nix-community/naersk;
 
+    skia = {
+      url = github:rust-skia/skia;
+      flake = false;
+    };
+
     # Used for shell.nix
     flake-compat = {
       url = github:edolstra/flake-compat;
@@ -31,6 +36,11 @@
         defaultPackage = naersk-lib.buildPackage {
           pname = name;
           root = ./.;
+          nativeBuildInputs = with pkgs; [
+            python3
+          ];
+
+          SKIA_USE_SYSTEM_LIBRARIES = true;
         };
 
         devShells.default = pkgs.mkShell {
