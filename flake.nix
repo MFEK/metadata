@@ -43,20 +43,16 @@ in {
         devShells.default = pkgs.mkShell {
           inherit name description;
           buildInputs = with pkgs; [
-            # all of rust unstable
             rust_channel
             rust-analyzer
             cargo
             lld
             pkg-config
-            glibc
-            gtk3.dev
-            SDL2
-            glif-test
-          ] ++ vulkan-dev;
+            # glibc
+          ];
 
-          LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath (with pkgs; [ pkg-config ] ++ vulkan-dev)}:$LD_LIBRARY_PATH";
-          PKG_CONFIG_PATH = "${pkgs.glibc}:PKG_CONFIG_PATH";
+          LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath (with pkgs; [ pkg-config ])}:$LD_LIBRARY_PATH";
+          # PKG_CONFIG_PATH = "${pkgs.glibc}:PKG_CONFIG_PATH";
 
           # for rust-analyzer; the target dir of the compiler for the project
           OUT_DIR = "./target";
