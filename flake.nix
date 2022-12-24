@@ -5,6 +5,10 @@
     rust-overlay.url = github:oxalica/rust-overlay;
     naersk.url       = github:nix-community/naersk;
 
+
+    # sample rust-skia build: https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/applications/editors/neovim/neovide/default.nix#L114
+    # rust-skia pulls skia from a hard-coded url by default (but flakes disallow internet access!),
+    # so we have to ask it to look for system libraries then build skia locally
     skia = {
       url = github:rust-skia/skia;
       flake = false;
