@@ -48,12 +48,7 @@ in {
             cargo
             lld
             pkg-config
-            # glibc
           ];
-
-          LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath (with pkgs; [ pkg-config ])}:$LD_LIBRARY_PATH";
-          # PKG_CONFIG_PATH = "${pkgs.glibc}:PKG_CONFIG_PATH";
-
           # for rust-analyzer; the target dir of the compiler for the project
           OUT_DIR = "./target";
           # don't warn for dead code, unused imports or unused variables
