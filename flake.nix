@@ -42,7 +42,23 @@
           root = ./.;
           nativeBuildInputs = with pkgs; [
             python3
+            clang
+            llvmPackages.libclang
+            gn
+            ninja
+            libiconv
+            fontconfig
           ];
+
+          # https://github.com/rust-skia/rust-skia/blob/master/flake.nix
+          SKIA_NINJA_COMMAND = "${pkgs.ninja}/bin/ninja";
+          SKIA_GN_COMMAND = "${pkgs.gn}/bin/gn";
+          LIBCLANG_PATH = "${pkgs.llvmPackages.libclang}/lib/libclang.so";
+
+          CC = "${pkgs.clang}/bin/clang";
+          CXX = "${pkgs.clang}/bin/clang++";
+          # TODO: what's the difference between the two libclang paths?
+          # LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
 
           # might need this: https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/aseprite/skia.nix
           SKIA_USE_SYSTEM_LIBRARIES = true;
@@ -54,6 +70,7 @@
         # build error: "no such file or directory": /sources/skia-bindings-0.56.1/build_support/skia/config.rs:313:10
         # https://github.com/rust-skia/rust-skia/blob/8eb0dd7fc98dd21e5e8bd2fc866323399b3795f6/skia-bindings/build_support/skia/config.rs#L303
         # -- missing the skia dependency
+
         devShells.default = pkgs.mkShell {
           inherit name description;
           buildInputs = with pkgs; [
@@ -64,7 +81,7 @@
             pkg-config
             fontconfig
             freetype
-            # google build tool used to make skia
+            clang
             gn
           ];
           # for rust-analyzer; the target dir of the compiler for the project
