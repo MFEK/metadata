@@ -44,9 +44,11 @@
             python3
           ];
 
-          SKIA_USE_SYSTEM_LIBRARIES = true;
-	  FORCE_SKIA_BUILD = true;
-          # SKIA_LIBRARY_SEARCH_PATH
+          # might need this: https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/aseprite/skia.nix
+          # SKIA_USE_SYSTEM_LIBRARIES = true;
+	        FORCE_SKIA_BUILD = true;
+          SKIA_LIBRARY_SEARCH_PATH = "$out/";
+          # TODO: Where is Skia built if built locally?
           # SKIA_SOURCE_DIR
         };
         # build error: "no such file or directory": /sources/skia-bindings-0.56.1/build_support/skia/config.rs:313:10
