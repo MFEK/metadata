@@ -100,6 +100,7 @@
         "naersk": "naersk",
         "nixpkgs": "nixpkgs_2",
         "rust-overlay": "rust-overlay",
+        "skia": "skia",
         "utils": "utils"
       }
     },
@@ -119,6 +120,22 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "skia": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1581451380,
+        "narHash": "sha256-WSJiKUNZUFjQ3w973PXWWz70CxoQaXWXlsw7amGkiWY=",
+        "owner": "rust-skia",
+        "repo": "skia",
+        "rev": "84cb5d3fd906ddda7a04ec1bad6638ab36457af3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rust-skia",
+        "repo": "skia",
         "type": "github"
       }
     },
