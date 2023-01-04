@@ -62,6 +62,8 @@
             pkg-config
             fontconfig
             freetype
+            # google build tool used to make skia
+            gn
           ];
           # for rust-analyzer; the target dir of the compiler for the project
           OUT_DIR = "./target";
