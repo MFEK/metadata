@@ -9,10 +9,10 @@
     # sample rust-skia build: https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/applications/editors/neovim/neovide/default.nix#L114
     # rust-skia pulls skia from a hard-coded url by default (but flakes disallow internet access!),
     # so we have to ask it to look for system libraries then build skia locally
-    skia = {
-      url = github:rust-skia/skia;
-      flake = false;
-    };
+    # skia = {
+    #   url = github:rust-skia/skia;
+    #   flake = false;
+    # };
 
     # Used for shell.nix
     flake-compat = {
@@ -45,7 +45,7 @@
           ];
 
           # might need this: https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/aseprite/skia.nix
-          # SKIA_USE_SYSTEM_LIBRARIES = true;
+          SKIA_USE_SYSTEM_LIBRARIES = true;
 	        FORCE_SKIA_BUILD = true;
           SKIA_LIBRARY_SEARCH_PATH = "$out/";
           # TODO: Where is Skia built if built locally?
