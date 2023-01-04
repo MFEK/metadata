@@ -62,8 +62,8 @@
 
           # might need this: https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/aseprite/skia.nix
           SKIA_USE_SYSTEM_LIBRARIES = true;
-	        FORCE_SKIA_BUILD = true;
-          SKIA_LIBRARY_SEARCH_PATH = "$out/";
+	  FORCE_SKIA_BUILD = true;
+          # SKIA_LIBRARY_SEARCH_PATH = "$out/";
           # TODO: Where is Skia built if built locally?
           # SKIA_SOURCE_DIR
         };
