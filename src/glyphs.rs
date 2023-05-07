@@ -65,23 +65,24 @@ fn unnamed_name(cp: char) -> &'static str {
 }
 
 fn glyph_row(g: &Glyph, codepoint_first: bool) -> String {
+    let codepoints = g.codepoints.clone().into_iter().collect();
     let mut ret = if codepoint_first {
-        format!("{}\t{}\t", codepoints_to_string(&g.codepoints), &g.name())
+        format!("{}\t{}\t", codepoints_to_string(&codepoints), &g.name())
     } else {
-        format!("{}\t{}\t", &g.name(), codepoints_to_string(&g.codepoints))
+        format!("{}\t{}\t", &g.name(), codepoints_to_string(&codepoints))
     };
     if g.codepoints.len() > 0 {
         ret.push_str(&format!(
             "{}\t",
             (g.codepoints
                 .iter()
-                .map(|cp| Name::of(*cp).map(|n| name_to_string(&n)).unwrap_or(unnamed_name(*cp).to_string()))
+                .map(|cp| Name::of(cp).map(|n| name_to_string(&n)).unwrap_or(unnamed_name(cp).to_string()))
                 .collect::<Vec<String>>())
             .join(",")
         ));
         ret.push_str(&format!(
             "{}\t",
-            (g.codepoints.iter().map(|cp| format!("{:?}", GeneralCategory::of(*cp))))
+            (g.codepoints.iter().map(|cp| format!("{:?}", GeneralCategory::of(cp))))
                 .collect::<Vec<String>>()
                 .join(",")
         ));
@@ -105,7 +106,7 @@ fn sort_rows_callback(a: &String, b: &String, unencoded_at_top: bool) -> Orderin
 
 pub fn glyphs(path: &std::ffi::OsStr, args: &clap::ArgMatches) {
     let dr = DataRequest::none().layers(true).data(true);
-    let ufo = Font::load_requested_data(path, &dr).expect("Failed to load UFO w/norad");
+    let ufo = Font::load_requested_data(path, dr).expect("Failed to load UFO w/norad");
     let do_sort = args.is_present("sort");
     let unencoded_at_top = args.is_present("unencoded-at-top");
     let hide_unencoded = args.is_present("hide-unencoded");
@@ -121,7 +122,7 @@ pub fn glyphs(path: &std::ffi::OsStr, args: &clap::ArgMatches) {
             if do_sort {
                 let codepoints = g.codepoints.to_owned();
                 for cp in codepoints {
-                    g.codepoints = vec![cp];
+                    g.codepoints.set(vec![cp]);
                     ret.push(glyph_row(&g, true));
                 }
             }
