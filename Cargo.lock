@@ -25,7 +25,7 @@ dependencies = [
  "fslock",
  "glifparser",
  "itertools",
- "kurbo 0.8.3",
+ "kurbo 0.9.0",
  "log",
  "mfek-ipc",
  "norad",
