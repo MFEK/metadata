@@ -869,13 +869,13 @@ dependencies = [
 
 [[package]]
 name = "norad"
-version = "0.10.0"
+version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2f390d75731c1f125d6cbf149227766fdb9a822217c2ce229490a333fba13cc"
+checksum = "83002707f60b910649c0de181ba66664c36a2f0bbb5e43f4d93d1202c699b1e2"
 dependencies = [
  "indexmap",
  "plist",
- "quick-xml",
+ "quick-xml 0.29.0",
  "serde",
  "serde_derive",
  "serde_repr",
@@ -958,7 +958,7 @@ dependencies = [
  "base64 0.21.0",
  "indexmap",
  "line-wrap",
- "quick-xml",
+ "quick-xml 0.28.2",
  "serde",
  "time 0.3.17",
 ]
@@ -989,6 +989,15 @@ name = "quick-xml"
 version = "0.28.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0ce5e73202a820a31f8a0ee32ada5e21029c81fd9e3ebf668a40832e4219d9d1"
+dependencies = [
+ "memchr",
+]
+
+[[package]]
+name = "quick-xml"
+version = "0.29.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "81b9228215d82c7b61490fec1de287136b5de6f5700f6e58ea9ad61a7964ca51"
 dependencies = [
  "memchr",
  "serde",
